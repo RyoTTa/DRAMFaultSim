@@ -1,5 +1,5 @@
 cmake_minimum_required(VERSION 3.0.0)
-project(dramfaultsim)
+project(dramfaultsim LANGUAGES CXX   VERSION 0.1)
 
 set(default_build_type "Release")
 if(NOT CMAKE_BUILD_TYPE AND NOT CMAKE_CONFIGURATION_TYPES)
@@ -22,8 +22,8 @@ target_include_directories(json INTERFACE ext/headers)
 
 # Main DRAMSim Lib
 add_library(dramfaultsim SHARED
-    src/common.cc
-)
+        src/common.cc
+        src/configuration.cc)
 
 if (DEBUG_TRACE)
     target_compile_options(dramfaultsim PRIVATE -DDEBUG_TRACE)

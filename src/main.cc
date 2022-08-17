@@ -1,34 +1,36 @@
 #include <iostream>
 #include "./../ext/headers/args.hxx"
+#include "common.h"
+#include "configuration.h"
 
-//using namespace dramfaultsim;
+using namespace dramfaultsim;
 
 int main(int argc, const char **argv) {
 
     args::ArgumentParser parser(
-        "DRAM Fault Simulator.",
-        "Examples: \n."
-        "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -c 100 -t "
-        "sample_trace.txt\n"
-        "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -s random -c 100");
+            "DRAM Fault Simulator.",
+            "Examples: \n."
+            "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -c 100 -t "
+            "sample_trace.txt\n"
+            "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -s random -c 100");
 
     args::HelpFlag help(parser, "help", "Display the help menu", {'h', "help"});
-    args::ValueFlag<uint64_t> num_cycles_arg(parser, "num_cycles",
-                                             "Number of cycles to simulate",
-                                             {'c', "cycles"}, 100000);
+    args::ValueFlag<uint64_t> num_cycles_arg(parser, "num_request",
+                                             "Number of request to simulate",
+                                             {'n', "num-request"}, 10);
     args::ValueFlag<std::string> output_dir_arg(
-        parser, "output_dir", "Output directory for stats files",
-        {'o', "output-dir"}, ".");
+            parser, "output_dir", "Output directory for stats files",
+            {'o', "output-dir"}, ".");
     args::ValueFlag<std::string> stream_arg(
-        parser, "stream_type", "address stream generator - (random), stream",
-        {'s', "stream"}, "random");
+            parser, "stream_type", "address stream generator - (random), stream",
+            {'s', "stream"}, "random");
     args::ValueFlag<std::string> trace_file_arg(
-        parser, "trace",
-        "Trace file, setting this option will ignore -s option",
-        {'t', "trace"});
+            parser, "trace",
+            "Trace file, setting this option will ignore -s option",
+            {'t', "trace"});
     args::ValueFlag<std::string> config_arg(
-        parser, "config", "The config file name (mandatory)",
-        {'f', "config"});
+            parser, "config", "The config file name (mandatory)",
+            {'c', "config"});
 
 
     try {
@@ -63,5 +65,13 @@ int main(int argc, const char **argv) {
         }
     }
 
-    std::cout << "Start" << std::endl;
+    //For DRAM Fault Sim Testing Code
+    Config *config = new Config(config_file, output_dir);
+    config->PrintInfo();
+
+    Address addr = config->AddressMapping(0x151213153);
+
+    PrintAddress(addr);
+
+    std::cout << "Main Function End" << std::endl;
 }

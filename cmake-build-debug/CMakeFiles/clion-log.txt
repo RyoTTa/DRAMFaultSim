@@ -1,0 +1,4 @@
+/home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/bin/cmake -DCMAKE_BUILD_TYPE=Debug -DCMAKE_MAKE_PROGRAM=/home/ryotta205/Downloads/clion-2022.1.1/bin/ninja/linux/ninja -G Ninja -S /home/ryotta205/git/DRAMFaultSim -B /home/ryotta205/git/DRAMFaultSim/cmake-build-debug
+-- Configuring done
+-- Generating done
+-- Build files have been written to: /home/ryotta205/git/DRAMFaultSim/cmake-build-debug
