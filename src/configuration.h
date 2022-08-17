@@ -1,5 +1,5 @@
-#ifndef __CONFIG_H
-#define __CONFIG_H
+#ifndef DRAMFAULTSIM_CONFIG_H
+#define DRAMFAULTSIM_CONFIG_H
 
 #include <fstream>
 #include <string>
@@ -65,4 +65,4 @@ namespace dramfaultsim {
 
 
 }
-#endif
+#endif //DRAMFAULTSIM_CONFIG_H

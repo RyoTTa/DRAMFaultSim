@@ -2,6 +2,7 @@
 #include "./../ext/headers/args.hxx"
 #include "common.h"
 #include "configuration.h"
+#include "generator.h"
 
 using namespace dramfaultsim;
 
@@ -15,7 +16,7 @@ int main(int argc, const char **argv) {
             "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -s random -c 100");
 
     args::HelpFlag help(parser, "help", "Display the help menu", {'h', "help"});
-    args::ValueFlag<uint64_t> num_cycles_arg(parser, "num_request",
+    args::ValueFlag<uint64_t> num_request_arg(parser, "num_request",
                                              "Number of request to simulate",
                                              {'n', "num-request"}, 10);
     args::ValueFlag<std::string> output_dir_arg(
@@ -50,25 +51,33 @@ int main(int argc, const char **argv) {
         return 1;
     }
 
-    uint64_t cycles = args::get(num_cycles_arg);
+    uint64_t request = args::get(num_request_arg);
     std::string output_dir = args::get(output_dir_arg);
     std::string trace_file = args::get(trace_file_arg);
     std::string stream_type = args::get(stream_arg);
 
+    Config *config = new Config(config_file, output_dir);
+    config->PrintInfo();
+
+    Generator *generator;
     if (!trace_file.empty()) {
-        std::cout << "TraceBasedRun" << std::endl;
+        std::cout << "TraceBasedGenerator" << std::endl;
     } else {
         if (stream_type == "stream" || stream_type == "s") {
-            std::cout << "StreamBasedRun" << std::endl;
+            std::cout << "StreamBasedGenerator" << std::endl;
         } else {
-            std::cout << "RandomBasedRun" << std::endl;
+            std::cout << "RandomBasedGenerator" << std::endl;
+            generator = new RandomGenerator(config_file, output_dir);
         }
+    }
+
+    for (uint64_t running = 0; running < request; running++){
+        generator->AccessMemory();
     }
 
     //For DRAM Fault Sim Testing Code
 #ifdef TEST_MODE
-    Config *config = new Config(config_file, output_dir);
-    config->PrintInfo();
+
 
     Address addr = config->AddressMapping(0x151213153);
 

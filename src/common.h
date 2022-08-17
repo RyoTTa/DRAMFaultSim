@@ -1,5 +1,5 @@
-#ifndef __COMMON_H
-#define __COMMON_H
+#ifndef RAMFAULTSIM_COMMON_H
+#define RAMFAULTSIM_COMMON_H
 
 #include <stdint.h>
 #include <iostream>
@@ -45,4 +45,4 @@ namespace dramfaultsim {
 
     void PrintAddress(Address addr);
 }
-#endif
+#endif //RAMFAULTSIM_COMMON_H

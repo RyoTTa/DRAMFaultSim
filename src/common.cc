@@ -18,7 +18,7 @@ namespace dramfaultsim {
 
     void PrintAddress(Address addr){
         std::cout << "####Address Parsing Info" << std::endl;
-        std::cout << "Address:   " << "0x" << std::hex << addr.hex_addr << std::endl;
+        std::cout << "Address:   " << "0x" << std::hex << addr.hex_addr << std::dec << std::endl;
         std::cout << "Channel:   " << addr.channel << std::endl;
         std::cout << "Rank:      " << addr.rank << std::endl;
         std::cout << "Bankgroup: " << addr.bankgroup << std::endl;
