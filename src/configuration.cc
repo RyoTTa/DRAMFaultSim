@@ -26,6 +26,7 @@ namespace dramfaultsim {
     }
 
     Address Config::AddressMapping(uint64_t hex_addr) const {
+        uint64_t origin_hex_addr = hex_addr;
         hex_addr >>= shift_bits;
         int channel = (hex_addr >> ch_pos) & ch_mask;
         int rank = (hex_addr >> ra_pos) & ra_mask;
@@ -33,7 +34,7 @@ namespace dramfaultsim {
         int ba = (hex_addr >> ba_pos) & ba_mask;
         int ro = (hex_addr >> ro_pos) & ro_mask;
         int co = (hex_addr >> co_pos) & co_mask;
-        return Address(channel, rank, bg, ba, ro, co);
+        return Address(channel, rank, bg, ba, ro, co, origin_hex_addr);
     }
 
     int Config::GetInteger(const std::string &sec, const std::string &opt,
@@ -89,6 +90,16 @@ namespace dramfaultsim {
             ranks = channel_size / megs_per_rank;
             channel_size = ranks * megs_per_rank;
         }
+#ifdef TEST_MODE
+        std::cout << "####CalculateSize in Configuration" << std::endl;
+        std::cout << "Device Per Rank: " << devices_per_rank << std::endl;
+        std::cout << "Page Size: " << page_size << " B" << std::endl;
+        std::cout << "Megabyte Per Bank: " << megs_per_bank << " MB" << std::endl;
+        std::cout << "Megabyte Per Rank: " << megs_per_rank << " MB, "
+                  << megs_per_rank / 1024 << " GB" << std::endl;
+        std::cout << "Channel Size: " << channel_size << " MB, "
+                  << channel_size / 1024 << " GB" << std::endl << std::endl;
+#endif  // TEST_MODE
         return;
     }
 
@@ -188,7 +199,7 @@ namespace dramfaultsim {
                   << std::endl;
         std::cout << "Column Position:      " << std::setw(3) << std::left << co_pos
                   << "Column Mask:      " << std::bitset<32>(co_mask)
-                  << std::endl;
+                  << std::endl << std::endl;
 
 
     }

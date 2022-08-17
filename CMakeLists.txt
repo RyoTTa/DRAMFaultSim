@@ -28,6 +28,10 @@ add_library(dramfaultsim SHARED
 if (DEBUG_TRACE)
     target_compile_options(dramfaultsim PRIVATE -DDEBUG_TRACE)
 endif (DEBUG_TRACE)
+if (TEST_MODE)
+    target_compile_options(dramfaultsim PRIVATE -DTEST_MODE)
+endif (TEST_MODE)
+
 
 target_include_directories(dramfaultsim INTERFACE src)
 target_compile_options(dramfaultsim PRIVATE -Wall)
@@ -42,6 +46,9 @@ set_target_properties(dramfaultsim PROPERTIES
 add_executable(dramfaultsimmain src/main.cc)
 target_link_libraries(dramfaultsimmain PRIVATE dramfaultsim args)
 target_compile_options(dramfaultsimmain PRIVATE)
+if (TEST_MODE)
+    target_compile_options(dramfaultsimmain PRIVATE -DTEST_MODE)
+endif (TEST_MODE)
 set_target_properties(dramfaultsimmain PROPERTIES
     CXX_STANDARD 11
     CXX_STANDARD_REQUIRED YES

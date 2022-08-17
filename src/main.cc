@@ -66,6 +66,7 @@ int main(int argc, const char **argv) {
     }
 
     //For DRAM Fault Sim Testing Code
+#ifdef TEST_MODE
     Config *config = new Config(config_file, output_dir);
     config->PrintInfo();
 
@@ -74,4 +75,6 @@ int main(int argc, const char **argv) {
     PrintAddress(addr);
 
     std::cout << "Main Function End" << std::endl;
+#endif  // TEST_MODE
+
 }
