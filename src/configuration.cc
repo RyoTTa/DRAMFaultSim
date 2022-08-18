@@ -90,7 +90,9 @@ namespace dramfaultsim {
             ranks = channel_size / megs_per_rank;
             channel_size = ranks * megs_per_rank;
         }
+        effective_addr_mask = ((uint64_t)1 << (LogBase2(channel_size) + LogBase2(1024) + LogBase2(1024))) - 1;
 #ifdef TEST_MODE
+        std::cout << "####TEST_MODE OUTPUT" << std::endl;
         std::cout << "####CalculateSize in Configuration" << std::endl;
         std::cout << "Device Per Rank: " << devices_per_rank << std::endl;
         std::cout << "Page Size: " << page_size << " B" << std::endl;
@@ -98,7 +100,9 @@ namespace dramfaultsim {
         std::cout << "Megabyte Per Rank: " << megs_per_rank << " MB, "
                   << megs_per_rank / 1024 << " GB" << std::endl;
         std::cout << "Channel Size: " << channel_size << " MB, "
-                  << channel_size / 1024 << " GB" << std::endl << std::endl;
+                  << channel_size / 1024 << " GB" << std::endl;
+        std::cout << "Effective Addr Mask: " << effective_addr_mask << std::endl;
+        std::cout << "Effective Addr Mask: " << std::bitset<64>(effective_addr_mask) << std::endl << std::endl;
 #endif  // TEST_MODE
         return;
     }

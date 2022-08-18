@@ -7,18 +7,17 @@
 #include "common.h"
 #include "configuration.h"
 #include "memory_system.h"
+#include <random>
 
 namespace dramfaultsim {
 
     class Generator {
     public:
         Generator(const std::string &config_file, const std::string &out_dir, Config config)
-                : config_(config), memory_system_(config) {
-            num_executed_request = 0;
-        }
+                : config_(config), memory_system_(config), num_executed_request(0) {}
 
         virtual bool AccessMemory(){
-            num_executed_request += 1;
+            num_executed_request++;
             return true;
         }
 
@@ -36,10 +35,12 @@ namespace dramfaultsim {
         bool AccessMemory() override;
 
     private:
+        std::random_device rd;
         uint64_t gen_addr;
-        //bool last_write = false;
+        bool is_write;
+#ifdef TEST_MODE
         std::mt19937_64 gen;
-        //bool get_next_ = true;
+#endif
     };
 }
 

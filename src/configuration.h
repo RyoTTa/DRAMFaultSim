@@ -36,6 +36,7 @@ namespace dramfaultsim {
         int shift_bits;
         int ch_pos, ra_pos, bg_pos, ba_pos, ro_pos, co_pos;
         uint64_t ch_mask, ra_mask, bg_mask, ba_mask, ro_mask, co_mask;
+        uint64_t effective_addr_mask;
 
         // System
         std::string address_mapping;

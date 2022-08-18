@@ -57,8 +57,10 @@ int main(int argc, const char **argv) {
     std::string stream_type = args::get(stream_arg);
 
     Config *config = new Config(config_file, output_dir, request);
+#ifdef TEST_MODE
+    std::cout << "####TEST_MODE OUTPUT" << std::endl;
     config->PrintInfo();
-
+#endif
     Generator *generator;
     if (!trace_file.empty()) {
         std::cout << "TraceBasedGenerator" << std::endl;
@@ -71,10 +73,6 @@ int main(int argc, const char **argv) {
         }
     }
 
-    for (uint64_t running = 0; running < request; running++){
-        generator->AccessMemory();
-    }
-
     bool last_request = false;
     while (!last_request){
         last_request = generator->AccessMemory();
@@ -82,12 +80,6 @@ int main(int argc, const char **argv) {
 
     //For DRAM Fault Sim Testing Code
 #ifdef TEST_MODE
-
-
-    Address addr = config->AddressMapping(0x151213153);
-
-    PrintAddress(addr);
-
     std::cout << "Main Function End" << std::endl;
 #endif  // TEST_MODE
 
