@@ -14,7 +14,7 @@ namespace dramfaultsim {
     class Generator {
     public:
         Generator(const std::string &config_file, const std::string &out_dir, Config config)
-                : config_(config), memory_system_(config), num_executed_request(0) {}
+                : config_(config), num_executed_request(0) {}
 
         virtual bool AccessMemory(){
             num_executed_request++;
@@ -23,7 +23,7 @@ namespace dramfaultsim {
 
     protected:
         Config config_;
-        MemorySystem memory_system_;
+        MemorySystem* memory_system_;
         uint64_t num_executed_request;
 
     };
