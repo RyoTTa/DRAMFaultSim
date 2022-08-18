@@ -56,7 +56,7 @@ int main(int argc, const char **argv) {
     std::string trace_file = args::get(trace_file_arg);
     std::string stream_type = args::get(stream_arg);
 
-    Config *config = new Config(config_file, output_dir);
+    Config *config = new Config(config_file, output_dir, request);
     config->PrintInfo();
 
     Generator *generator;
@@ -67,12 +67,17 @@ int main(int argc, const char **argv) {
             std::cout << "StreamBasedGenerator" << std::endl;
         } else {
             std::cout << "RandomBasedGenerator" << std::endl;
-            generator = new RandomGenerator(config_file, output_dir);
+            generator = new RandomGenerator(config_file, output_dir, *config);
         }
     }
 
     for (uint64_t running = 0; running < request; running++){
         generator->AccessMemory();
+    }
+
+    bool last_request = false;
+    while (!last_request){
+        last_request = generator->AccessMemory();
     }
 
     //For DRAM Fault Sim Testing Code

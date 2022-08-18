@@ -5,9 +5,18 @@
 
 namespace dramfaultsim{
 
-    void RandomGenerator::AccessMemory() {
-        last_addr = gen();
-        std::cout << "Accessing Memory: 0x" << std::hex << last_addr << std::dec << std::endl;
-        //config_->PrintInfo();
+    bool RandomGenerator::AccessMemory() {
+        Generator::AccessMemory();
+
+        gen_addr = gen();
+        std::cout << "Accessing Memory: 0x" << std::hex << gen_addr << std::dec << std::endl;
+
+        if (config_.num_request == 0)
+            return false;
+        else if (num_executed_request >= config_.num_request)
+            return true;
+        else
+            return false;
+
     }
 }

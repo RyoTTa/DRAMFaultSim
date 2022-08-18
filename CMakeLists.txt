@@ -24,7 +24,9 @@ target_include_directories(json INTERFACE ext/headers)
 add_library(dramfaultsim SHARED
         src/common.cc
         src/configuration.cc
-        src/generator.cc src/memory_system.cc src/memory_system.h)
+        src/generator.cc
+        src/memory_system.cc
+        )
 
 if (DEBUG_TRACE)
     target_compile_options(dramfaultsim PRIVATE -DDEBUG_TRACE)

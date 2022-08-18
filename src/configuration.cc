@@ -8,8 +8,8 @@
 
 namespace dramfaultsim {
 
-    Config::Config(std::string config_file, std::string out_dir)
-            : output_dir(out_dir), reader_(new INIReader(config_file)) {
+    Config::Config(std::string config_file, std::string out_dir, uint64_t request)
+            : output_dir(out_dir), num_request(request), reader_(new INIReader(config_file)) {
         if (reader_->ParseError() < 0) {
             std::cerr << "Can't load config file - " << config_file << std::endl;
             AbruptExit(__FILE__, __LINE__);

@@ -12,7 +12,7 @@ namespace dramfaultsim {
 
     public:
         //Basic Function
-        Config(std::string config_file, std::string out_dir);
+        Config(std::string config_file, std::string out_dir, uint64_t request);
 
         Address AddressMapping(uint64_t hex_addr) const;
 
@@ -45,6 +45,9 @@ namespace dramfaultsim {
 
         // Computed parameters
         int request_size_bytes;
+
+        // Running Request Number
+        uint64_t num_request;
 
     private:
         INIReader *reader_;

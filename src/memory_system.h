@@ -11,12 +11,12 @@ namespace dramfaultsim{
 
     class MemorySystem{
     public:
-        MemorySystem(const std::string &config_file, const std::string &output_dir)
-        : config_(new Config(config_file, output_dir)){};
+        MemorySystem(Config config)
+        : config_(config){};
         ~MemorySystem(){};
 
     protected:
-        Config *config_;
+        Config config_;
     };
 }
 
