@@ -52,6 +52,9 @@ namespace dramfaultsim {
         // Running Request Number
         uint64_t num_request;
 
+        // For Fault Model
+        double hard_fault_rate;
+
     private:
         INIReader *reader_;
 
@@ -60,9 +63,14 @@ namespace dramfaultsim {
         int GetInteger(const std::string &sec, const std::string &opt,
                        int default_val) const;
 
+        double GetDouble(const std::string &sec, const std::string &opt,
+                       double default_val) const;
+
         void InitDRAMParams();
 
         void InitSystemParams();
+
+        void InitFaultModelParams();
 
         void SetAddressMapping();
 

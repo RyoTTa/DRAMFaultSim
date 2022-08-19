@@ -3,11 +3,9 @@
 //
 #include "faultmodel.h"
 
-namespace dramfaultsim{
-    NaiveFaultModel::NaiveFaultModel(Config config, uint64_t ******data_block) : FaultModel(config, data_block){
-#ifdef TEST_MODE
-        std::cout << "NaiveFaultModel Constructor" << std::endl;
-#endif
+namespace dramfaultsim {
+    NaiveFaultModel::NaiveFaultModel(Config config, uint64_t ******data_block)
+            : FaultModel(config, data_block) {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());
 #endif
@@ -32,5 +30,39 @@ namespace dramfaultsim{
                 }
             }
         }
+    }
+
+    NaiveFaultModel::~NaiveFaultModel() {
+        for (int i = 0; i < config_.channels; i++) {
+            for (int j = 0; j < config_.ranks; j++) {
+                for (int k = 0; k < config_.bankgroups; k++) {
+                    for (int q = 0; q < config_.banks_per_group; q++) {
+                        for (int e = 0; e < config_.rows; e++) {
+                            delete[] fault_map_[i][j][k][q][e];
+                        }
+                        delete[] fault_map_[i][j][k][q];
+                    }
+                    delete[] fault_map_[i][j][k];
+                }
+                delete[] fault_map_[i][j];
+            }
+            delete[] fault_map_[i];
+        }
+        delete[] fault_map_;
+    }
+
+    uint64_t NaiveFaultModel::ErrorInjection(uint64_t addr) {
+        uint64_t ErrorMask = 0;
+
+        SetRecvAddress(addr);
+
+        ErrorMask |= HardFaultError();
+
+        return ErrorMask;
+    }
+
+    uint64_t NaiveFaultModel::HardFaultError() {
+        return fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup] \
+                            [recv_addr_bank][recv_addr_row][recv_addr_column].hardfault;
     }
 }

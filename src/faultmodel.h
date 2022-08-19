@@ -18,17 +18,45 @@ namespace dramfaultsim {
         FaultModel(Config config, uint64_t ******data_block)
                 : config_(config), data_block_(data_block) {}
 
+        virtual uint64_t ErrorInjection(uint64_t addr) = 0;
+        virtual uint64_t HardFaultError() = 0;
+
     protected:
         Config config_;
-        Address addr_;
+        Address recv_addr_;
         uint64_t ******data_block_;
+
+        uint8_t recv_addr_channel;
+        uint8_t recv_addr_rank;
+        uint8_t recv_addr_bankgroup;
+        uint8_t recv_addr_bank;
+        uint8_t recv_addr_row;
+        uint8_t recv_addr_column;
+
+        void SetRecvAddress(uint64_t addr) {
+            recv_addr_ = config_.AddressMapping(addr);
+
+            recv_addr_channel = recv_addr_.channel;
+            recv_addr_rank = recv_addr_.rank;
+            recv_addr_bankgroup = recv_addr_.bankgroup;
+            recv_addr_bank = recv_addr_.bank;
+            recv_addr_row = recv_addr_.row;
+            recv_addr_column = recv_addr_.column;
+
+            return;
+        }
     };
+
 
     class NaiveFaultModel : public FaultModel {
     public:
         NaiveFaultModel(Config config, uint64_t ******data_block);
 
         ~NaiveFaultModel();
+
+        uint64_t ErrorInjection(uint64_t addr) override;
+
+        uint64_t HardFaultError() override;
 
     protected:
 

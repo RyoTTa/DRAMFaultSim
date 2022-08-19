@@ -19,6 +19,7 @@ namespace dramfaultsim {
         // because of internal dependencies
         InitSystemParams();
         InitDRAMParams();
+        InitFaultModelParams();
         CalculateSize();
         SetAddressMapping();
 
@@ -40,6 +41,11 @@ namespace dramfaultsim {
     int Config::GetInteger(const std::string &sec, const std::string &opt,
                            int default_val) const {
         return static_cast<int>(reader_->GetInteger(sec, opt, default_val));
+    }
+
+    double Config::GetDouble(const std::string &sec, const std::string &opt,
+                           double default_val) const {
+        return static_cast<int>(reader_->GetReal(sec, opt, default_val));
     }
 
     void Config::InitSystemParams() {
@@ -69,6 +75,12 @@ namespace dramfaultsim {
         columns = GetInteger("dram_structure", "columns", 1 << 10);
         device_width = GetInteger("dram_structure", "device_width", 8);
         BL = GetInteger("dram_structure", "BL", 8);
+
+        return;
+    }
+
+    void Config::InitFaultModelParams() {
+        hard_fault_rate = GetDouble("fault_probability", "hard_fault_rate", 0.001);
 
         return;
     }

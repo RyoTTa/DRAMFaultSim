@@ -2,8 +2,14 @@
 // Created by ryotta205 on 8/17/22.
 //
 #include "memory_system.h"
+#include <bitset>
 
 namespace dramfaultsim {
+    uint64_t MemorySystem::FaultData(uint64_t data) {
+        return data ^ fault_mask;
+    }
+
+
 
     NaiveMemorySystem::NaiveMemorySystem(Config config) : MemorySystem(config) {
 #ifndef TEST_MODE
@@ -57,7 +63,8 @@ namespace dramfaultsim {
 
     void NaiveMemorySystem::RecvRequest(uint64_t addr, bool is_write, uint64_t data) {
 #ifdef TEST_MODE
-        std::cout << "Recv Request  : 0x" << std::hex << addr << std::dec << (is_write ? "  WRITE" : "  READ")<< std::endl;
+        std::cout << "Recv Request  : 0x" << std::hex << addr << std::dec << (is_write ? "  WRITE" : "  READ")\
+        << std::endl;
         std::cout << "Recv Data     : 0x" << std::hex << data << std::dec << std::endl;
 #endif
         //Translate Recv Address
@@ -69,31 +76,53 @@ namespace dramfaultsim {
             Read(data);
         }
 
+        fault_mask = faultmodel_->ErrorInjection(addr);
+        fault_data = MemorySystem::FaultData(data);
+
+#ifdef TEST_MODE
+        std::cout << "CorrectData: 0x" << std::hex << data << std::dec << std::endl;
+        std::cout << "CorrectData: 0b" << std::bitset<64>(data) << std::endl << std::endl;
+
+        std::cout << "ErrorMask  : 0x" << std::hex << fault_mask << std::dec << std::endl;
+        std::cout << "ErrorMask  : 0b" << std::bitset<64>(fault_mask) << std::endl << std::endl;
+
+        std::cout << "ErrorData  : 0x" << std::hex << fault_data << std::dec << std::endl;
+        std::cout << "ErrorData  : 0b" << std::bitset<64>(fault_data) << std::endl << std::endl;
+#endif
+        return;
     }
 
     void NaiveMemorySystem::Read(uint64_t data) {
 #ifdef TEST_MODE
         std::cout << "Read Request      : 0x" << std::hex << recv_addr_.hex_addr << std::dec << std::endl;
-            std::cout << "Read Data Before  : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl;
+        std::cout << "Read Data Before  : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
+            [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl;
 #endif
 
-        data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] = data;
+        data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row]\
+[recv_addr_column] = data;
 
 #ifdef TEST_MODE
-        std::cout << "Read Data After   : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl << std::endl;
+        std::cout << "Read Data After   : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
+        [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl << std::endl;
 #endif
+        return;
     }
 
     void NaiveMemorySystem::Write(uint64_t data) {
 #ifdef TEST_MODE
         std::cout << "Write Request     : 0x" << std::hex << recv_addr_.hex_addr << std::dec << std::endl;
-            std::cout << "Write Data Before : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl;
+        std::cout << "Write Data Before : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
+            [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl;
 #endif
 
-        data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] = data;
+        data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row]\
+[recv_addr_column] = data;
 
 #ifdef TEST_MODE
-        std::cout << "Write Data After  : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl << std::endl;
+        std::cout << "Write Data After  : 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
+        [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column] << std::dec << std::endl << std::endl;
 #endif
+        return;
     }
 }
