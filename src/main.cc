@@ -58,7 +58,6 @@ int main(int argc, const char **argv) {
 
     Config *config = new Config(config_file, output_dir, request);
 #ifdef TEST_MODE
-    std::cout << "####TEST_MODE OUTPUT" << std::endl;
     config->PrintInfo();
 #endif
     Generator *generator;

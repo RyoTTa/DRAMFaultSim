@@ -167,6 +167,7 @@ namespace dramfaultsim {
     }
 
     void Config::PrintInfo() {
+        std::cout << "####TEST_MODE OUTPUT" << std::endl;
         std::cout << "####Configuration Information" << std::endl;
         std::cout << "Channels: " << channels << std::endl;
         std::cout << "Ranks: " << ranks << std::endl;
@@ -180,6 +181,7 @@ namespace dramfaultsim {
         std::cout << "Devices Per Rank: " << devices_per_rank << std::endl;
         std::cout << "BL: " << BL << std::endl << std::endl;
 
+        std::cout << "####TEST_MODE OUTPUT" << std::endl;
         std::cout << "####Address Mapping Information"
                   << std::endl;
         std::cout << "Address Mapping:      " << address_mapping

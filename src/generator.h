@@ -16,28 +16,30 @@ namespace dramfaultsim {
         Generator(const std::string &config_file, const std::string &out_dir, Config config)
                 : config_(config), num_executed_request(0) {}
 
-        virtual bool AccessMemory(){
+        virtual bool AccessMemory() {
             num_executed_request++;
             return true;
         }
 
     protected:
         Config config_;
-        MemorySystem* memory_system_;
+        MemorySystem *memory_system_;
         uint64_t num_executed_request;
 
     };
 
     class RandomGenerator : public Generator {
     public:
-        using Generator::Generator;
+        RandomGenerator(const std::string &config_file, const std::string &out_dir, Config config);
 
         bool AccessMemory() override;
 
     private:
         std::random_device rd;
         uint64_t gen_addr;
+        uint64_t gen_data;
         bool is_write;
+
 #ifdef TEST_MODE
         std::mt19937_64 gen;
 #endif
