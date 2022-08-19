@@ -4,9 +4,12 @@
 #include "generator.h"
 
 namespace dramfaultsim {
-    RandomGenerator::RandomGenerator(const std::string &config_file, const std::string &out_dir, Config config)
-    : Generator(config_file, out_dir, config){
-        memory_system_ = new MemorySystemNaive(config_);
+    RandomGenerator::RandomGenerator(Config config)
+    : Generator(config){
+        if(config_.memory_system == "NaiveMemorySystem"){
+            memory_system_ = new NaiveMemorySystem(config_);
+        }
+
     }
 
     bool RandomGenerator::AccessMemory() {

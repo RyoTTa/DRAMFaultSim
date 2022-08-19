@@ -43,6 +43,8 @@ namespace dramfaultsim {
         std::string output_dir;
         std::string output_prefix;
         std::string txt_stats_name;
+        std::string memory_system;
+        std::string fault_model;
 
         // Computed parameters
         int request_size_bytes;

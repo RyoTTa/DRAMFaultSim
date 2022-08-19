@@ -48,7 +48,8 @@ namespace dramfaultsim {
         channels = GetInteger("system", "channels", 1);
         bus_width = GetInteger("system", "bus_width", 64);
         address_mapping = reader.Get("system", "address_mapping", "chrobabgraco");
-
+        memory_system = reader.Get("system", "memory_system", "NaiveMemorySystem");
+        fault_model = reader.Get("system", "fault_model", "NaiveFaultModel");
         return;
     }
 

@@ -68,7 +68,7 @@ int main(int argc, const char **argv) {
             std::cout << "StreamBasedGenerator" << std::endl;
         } else {
             std::cout << "RandomBasedGenerator" << std::endl;
-            generator = new RandomGenerator(config_file, output_dir, *config);
+            generator = new RandomGenerator(*config);
         }
     }
 

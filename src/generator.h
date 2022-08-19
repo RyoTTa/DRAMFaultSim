@@ -13,7 +13,7 @@ namespace dramfaultsim {
 
     class Generator {
     public:
-        Generator(const std::string &config_file, const std::string &out_dir, Config config)
+        Generator(Config config)
                 : config_(config), num_executed_request(0) {}
 
         virtual bool AccessMemory() {
@@ -30,7 +30,7 @@ namespace dramfaultsim {
 
     class RandomGenerator : public Generator {
     public:
-        RandomGenerator(const std::string &config_file, const std::string &out_dir, Config config);
+        RandomGenerator(Config config);
 
         bool AccessMemory() override;
 
