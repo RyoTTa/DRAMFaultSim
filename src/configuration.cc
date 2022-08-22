@@ -45,7 +45,7 @@ namespace dramfaultsim {
 
     double Config::GetDouble(const std::string &sec, const std::string &opt,
                            double default_val) const {
-        return static_cast<int>(reader_->GetReal(sec, opt, default_val));
+        return static_cast<double>(reader_->GetReal(sec, opt, default_val));
     }
 
     void Config::InitSystemParams() {
@@ -56,6 +56,7 @@ namespace dramfaultsim {
         address_mapping = reader.Get("system", "address_mapping", "chrobabgraco");
         memory_system = reader.Get("system", "memory_system", "NaiveMemorySystem");
         fault_model = reader.Get("system", "fault_model", "NaiveFaultModel");
+        thread_model = reader.Get("system", "thread", "SingleThread");
         return;
     }
 

@@ -17,9 +17,26 @@ namespace dramfaultsim {
     public:
         FaultModel(Config config, uint64_t ******data_block)
                 : config_(config), data_block_(data_block) {}
+        virtual ~FaultModel(){};
 
         virtual uint64_t ErrorInjection(uint64_t addr) = 0;
         virtual uint64_t HardFaultError() = 0;
+
+        double GetRandomDobule(double low, double high){
+            std::uniform_real_distribution<> dist(low, high);
+            std::mt19937_64 gen(rd());
+
+            //std::cout << dist(gen) << std::endl;
+            return dist(gen);
+        }
+
+        int GetRandomInt(int low, int high){
+            std::uniform_int_distribution<> dist(low, high);
+            std::mt19937_64 gen(rd());
+
+            //std::cout << dist(gen) << std::endl;
+            return dist(gen);
+        }
 
     protected:
         Config config_;
@@ -45,6 +62,11 @@ namespace dramfaultsim {
 
             return;
         }
+    private:
+        std::random_device rd;
+#ifdef TEST_MODE
+        std::mt19937_64 gen;
+#endif
     };
 
 
@@ -57,6 +79,10 @@ namespace dramfaultsim {
         uint64_t ErrorInjection(uint64_t addr) override;
 
         uint64_t HardFaultError() override;
+
+        void HardFaultErrorGenerator();
+
+        void HardFaultErrorGeneratorThread(int num_generate);
 
     protected:
 

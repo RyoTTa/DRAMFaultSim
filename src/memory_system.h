@@ -16,7 +16,7 @@ namespace dramfaultsim {
         MemorySystem(Config config)
                 : config_(config) {}
 
-        ~MemorySystem() {};
+        virtual ~MemorySystem() {};
 
         virtual void RecvRequest(uint64_t addr, bool is_write, uint64_t data) = 0;
         virtual void Read(uint64_t data) = 0;

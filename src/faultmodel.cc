@@ -2,6 +2,7 @@
 // Created by ryotta205 on 8/19/22.
 //
 #include "faultmodel.h"
+#include <thread>
 
 namespace dramfaultsim {
     NaiveFaultModel::NaiveFaultModel(Config config, uint64_t ******data_block)
@@ -23,13 +24,16 @@ namespace dramfaultsim {
                         for (int e = 0; e < config_.rows; e++) {
                             fault_map_[i][j][k][q][e] = new FaultStruct[config_.columns];
                             for (int f = 0; f < config_.columns; f++) {
-                                fault_map_[i][j][k][q][e][f].hardfault = 0xffffffffffffffff;
+                                //fault_map_[i][j][k][q][e][f].hardfault = 0xffffffffffffffff;
+                                fault_map_[i][j][k][q][e][f].hardfault = 0x0;
                             }
                         }
                     }
                 }
             }
         }
+
+        HardFaultErrorGenerator();
     }
 
     NaiveFaultModel::~NaiveFaultModel() {
@@ -63,6 +67,59 @@ namespace dramfaultsim {
 
     uint64_t NaiveFaultModel::HardFaultError() {
         return fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup] \
-                            [recv_addr_bank][recv_addr_row][recv_addr_column].hardfault;
+[recv_addr_bank][recv_addr_row][recv_addr_column].hardfault;
+    }
+
+    void NaiveFaultModel::HardFaultErrorGenerator() {
+        uint64_t num_all_cell =
+                (uint64_t) config_.channels * (uint64_t) config_.ranks * (uint64_t) config_.bankgroups *
+                (uint64_t) config_.banks_per_group * (uint64_t) config_.rows *
+                (uint64_t) config_.columns * (uint64_t) config_.bus_width;
+
+        uint64_t num_hard_fault_cell = (uint64_t) ((double) num_all_cell * config_.hard_fault_rate / 100);
+
+        std::cout << num_all_cell << std::endl;
+        std::cout << num_hard_fault_cell << std::endl;
+
+        if(config_.thread_model == "SingleThread"){
+            for (uint64_t i = 0; i < num_hard_fault_cell; i++) {
+                int channel, rank, bankgroup, bankpergroup, row, column, bit;
+                channel = GetRandomInt(0, (config_.channels - 1));
+                rank = GetRandomInt(0, (config_.ranks - 1));
+                bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
+                bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
+                row = GetRandomInt(0, (config_.rows - 1));
+                column = GetRandomInt(0, (config_.columns - 1));
+                bit = GetRandomInt(0, (config_.bus_width - 1));
+
+                fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault |= ((uint64_t) 1 << bit);
+                std::cout << channel << rank << bankgroup << bankpergroup << row << column << bit << std::endl;
+                //std::cout<<fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault<<std::endl;
+                std::cout << i << std::endl;
+            }
+        }else if (config_.thread_model == "MultiThread"){
+
+        }else{
+
+        }
+
+    }
+
+    void NaiveFaultModel::HardFaultErrorGeneratorThread(int num_generate){
+        for (int i = 0; i < num_generate; i++) {
+            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            channel = GetRandomInt(0, (config_.channels - 1));
+            rank = GetRandomInt(0, (config_.ranks - 1));
+            bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
+            bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
+            row = GetRandomInt(0, (config_.rows - 1));
+            column = GetRandomInt(0, (config_.columns - 1));
+            bit = GetRandomInt(0, (config_.bus_width - 1));
+
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault |= ((uint64_t) 1 << bit);
+            std::cout << channel << rank << bankgroup << bankpergroup << row << column << bit << std::endl;
+            //std::cout<<fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault<<std::endl;
+            std::cout << i << std::endl;
+        }
     }
 }
