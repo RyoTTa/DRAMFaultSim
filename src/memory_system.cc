@@ -9,7 +9,7 @@ namespace dramfaultsim {
         return data ^ fault_mask;
     }
 
-    NaiveMemorySystem::NaiveMemorySystem(Config config) : MemorySystem(config) {
+    NaiveMemorySystem::NaiveMemorySystem(Config &config) : MemorySystem(config) {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());
 #endif
@@ -76,6 +76,17 @@ namespace dramfaultsim {
 
         fault_mask = faultmodel_->ErrorInjection(addr);
         fault_data = MemorySystem::FaultData(data);
+
+        if(fault_mask != (uint64_t)0){
+            std::cout << "CorrectData: 0x" << std::hex << data << std::dec << std::endl;
+            std::cout << "CorrectData: 0b" << std::bitset<64>(data) << std::endl << std::endl;
+
+            std::cout << "ErrorMask  : 0x" << std::hex << fault_mask << std::dec << std::endl;
+            std::cout << "ErrorMask  : 0b" << std::bitset<64>(fault_mask) << std::endl << std::endl;
+
+            std::cout << "ErrorData  : 0x" << std::hex << fault_data << std::dec << std::endl;
+            std::cout << "ErrorData  : 0b" << std::bitset<64>(fault_data) << std::endl << std::endl;
+        }
 
 #ifdef TEST_MODE
         std::cout << "CorrectData: 0x" << std::hex << data << std::dec << std::endl;

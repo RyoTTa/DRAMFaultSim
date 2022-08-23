@@ -1,4 +1,4 @@
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.1.0)
 project(dramfaultsim LANGUAGES CXX   VERSION 0.1)
 
 set(default_build_type "Release")
@@ -26,7 +26,7 @@ add_library(dramfaultsim SHARED
         src/configuration.cc
         src/generator.cc
         src/memory_system.cc
-        src/faultmodel.cc src/faultmodel.h)
+        src/faultmodel.cc)
 
 if (DEBUG_TRACE)
     target_compile_options(dramfaultsim PRIVATE -DDEBUG_TRACE)
@@ -35,10 +35,12 @@ if (TEST_MODE)
     target_compile_options(dramfaultsim PRIVATE -DTEST_MODE)
 endif (TEST_MODE)
 
-
+set(THREADS_PREFER_PTHREAD_FLAG ON)
+find_package(Threads REQUIRED)
 target_include_directories(dramfaultsim INTERFACE src)
 target_compile_options(dramfaultsim PRIVATE -Wall)
-target_link_libraries(dramfaultsim PRIVATE inih)
+target_compile_options(dramfaultsim PUBLIC -pthread)
+target_link_libraries(dramfaultsim PRIVATE inih Threads::Threads)
 set_target_properties(dramfaultsim PROPERTIES
     LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
     CXX_STANDARD 11
@@ -47,8 +49,9 @@ set_target_properties(dramfaultsim PROPERTIES
 )
 
 add_executable(dramfaultsimmain src/main.cc)
-target_link_libraries(dramfaultsimmain PRIVATE dramfaultsim args)
+target_link_libraries(dramfaultsimmain PRIVATE dramfaultsim args Threads::Threads)
 target_compile_options(dramfaultsimmain PRIVATE)
+target_compile_options(dramfaultsimmain PUBLIC -pthread)
 if (TEST_MODE)
     target_compile_options(dramfaultsimmain PRIVATE -DTEST_MODE)
 endif (TEST_MODE)

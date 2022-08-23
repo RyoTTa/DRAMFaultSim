@@ -4,7 +4,7 @@
 #include "generator.h"
 
 namespace dramfaultsim {
-    RandomGenerator::RandomGenerator(Config config)
+    RandomGenerator::RandomGenerator(Config &config)
     : Generator(config){
         if(config_.memory_system == "NaiveMemorySystem"){
             memory_system_ = new NaiveMemorySystem(config_);

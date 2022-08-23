@@ -13,7 +13,7 @@ namespace dramfaultsim {
 
     class Generator {
     public:
-        Generator(Config config)
+        Generator(Config &config)
                 : config_(config), num_executed_request(0) {}
 
         virtual bool AccessMemory() {
@@ -22,7 +22,7 @@ namespace dramfaultsim {
         }
 
     protected:
-        Config config_;
+        Config &config_;
         MemorySystem *memory_system_;
         uint64_t num_executed_request;
 
@@ -30,7 +30,7 @@ namespace dramfaultsim {
 
     class RandomGenerator : public Generator {
     public:
-        RandomGenerator(Config config);
+        RandomGenerator(Config &config);
 
         bool AccessMemory() override;
 

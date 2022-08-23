@@ -15,7 +15,7 @@ namespace dramfaultsim {
 
     class FaultModel {
     public:
-        FaultModel(Config config, uint64_t ******data_block)
+        FaultModel(Config &config, uint64_t ******data_block)
                 : config_(config), data_block_(data_block) {}
         virtual ~FaultModel(){};
 
@@ -39,7 +39,7 @@ namespace dramfaultsim {
         }
 
     protected:
-        Config config_;
+        Config &config_;
         Address recv_addr_;
         uint64_t ******data_block_;
 
@@ -72,7 +72,7 @@ namespace dramfaultsim {
 
     class NaiveFaultModel : public FaultModel {
     public:
-        NaiveFaultModel(Config config, uint64_t ******data_block);
+        NaiveFaultModel(Config &config, uint64_t ******data_block);
 
         ~NaiveFaultModel();
 

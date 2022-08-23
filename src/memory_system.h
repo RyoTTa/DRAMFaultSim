@@ -13,7 +13,7 @@ namespace dramfaultsim {
 
     class MemorySystem {
     public:
-        MemorySystem(Config config)
+        MemorySystem(Config &config)
                 : config_(config) {}
 
         virtual ~MemorySystem() {};
@@ -24,7 +24,7 @@ namespace dramfaultsim {
         uint64_t FaultData(uint64_t data);
 
     protected:
-        Config config_;
+        Config &config_;
         Address recv_addr_;
         FaultModel *faultmodel_;
 
@@ -58,7 +58,7 @@ namespace dramfaultsim {
 
     class NaiveMemorySystem : public MemorySystem {
     public:
-        NaiveMemorySystem(Config config);
+        NaiveMemorySystem(Config &config);
 
         ~NaiveMemorySystem();
 
