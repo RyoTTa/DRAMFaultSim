@@ -82,7 +82,7 @@ namespace dramfaultsim {
 
         void HardFaultErrorGenerator();
 
-        void HardFaultErrorGeneratorThread(int num_generate);
+        void HardFaultErrorGeneratorThread(uint64_t num_generate);
 
     protected:
 

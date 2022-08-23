@@ -33,6 +33,10 @@ namespace dramfaultsim {
             }
         }
 
+        ErrorMask = 0;
+        num_all_cell = 0;
+        num_hard_fault_cell = 0;
+
         HardFaultErrorGenerator();
     }
 
@@ -83,42 +87,25 @@ namespace dramfaultsim {
         //std::cout << num_hard_fault_cell << std::endl;
 
         if (config_.thread_model == "SingleThread") {
-            for (uint64_t i = 0; i < num_hard_fault_cell; i++) {
-                int channel, rank, bankgroup, bankpergroup, row, column, bit;
-                channel = GetRandomInt(0, (config_.channels - 1));
-                rank = GetRandomInt(0, (config_.ranks - 1));
-                bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
-                bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
-                row = GetRandomInt(0, (config_.rows - 1));
-                column = GetRandomInt(0, (config_.columns - 1));
-                bit = GetRandomInt(0, (config_.bus_width - 1));
-
-                fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault |= ((uint64_t) 1 << bit);
-                //std::cout << channel << rank << bankgroup << bankpergroup << row << column << bit << std::endl;
-                //std::cout<<fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault<<std::endl;
-                //std::cout << i << std::endl;
-            }
+            HardFaultErrorGeneratorThread(num_hard_fault_cell);
         } else if (config_.thread_model == "MultiThread") {
             std::thread _t[config_.thread_num];
 
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i] = std::thread(&NaiveFaultModel::HardFaultErrorGeneratorThread, this,
-                                    num_hard_fault_cell / config_.thread_num);
+                                    num_hard_fault_cell / (uint64_t)config_.thread_num);
             }
-
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i].join();
             }
 
 
-        } else {
-
         }
 
     }
 
-    void NaiveFaultModel::HardFaultErrorGeneratorThread(int num_generate) {
-        for (int i = 0; i < num_generate; i++) {
+    void NaiveFaultModel::HardFaultErrorGeneratorThread(uint64_t num_generate) {
+        for (uint64_t i = 0; i < num_generate; i++) {
             int channel, rank, bankgroup, bankpergroup, row, column, bit;
             channel = GetRandomInt(0, (config_.channels - 1));
             rank = GetRandomInt(0, (config_.ranks - 1));
