@@ -54,9 +54,7 @@ namespace dramfaultsim {
         channels = GetInteger("system", "channels", 1);
         bus_width = GetInteger("system", "bus_width", 64);
         address_mapping = reader.Get("system", "address_mapping", "chrobabgraco");
-        memory_system = reader.Get("system", "memory_system", "NaiveMemorySystem");
-        fault_model = reader.Get("system", "fault_model", "NaiveFaultModel");
-        thread_model = reader.Get("system", "thread", "SingleThread");
+
         return;
     }
 
@@ -81,7 +79,11 @@ namespace dramfaultsim {
     }
 
     void Config::InitFaultModelParams() {
+        const auto &reader = *reader_;
         hard_fault_rate = GetDouble("fault_probability", "hard_fault_rate", 0.001);
+        memory_system = reader.Get("system", "memory_system", "NaiveMemorySystem");
+        fault_model = reader.Get("system", "fault_model", "NaiveFaultModel");
+        thread_model = reader.Get("system", "thread", "SingleThread");
 
         return;
     }

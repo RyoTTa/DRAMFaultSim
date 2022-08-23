@@ -9,8 +9,6 @@ namespace dramfaultsim {
         return data ^ fault_mask;
     }
 
-
-
     NaiveMemorySystem::NaiveMemorySystem(Config config) : MemorySystem(config) {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());

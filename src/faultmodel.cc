@@ -56,9 +56,10 @@ namespace dramfaultsim {
     }
 
     uint64_t NaiveFaultModel::ErrorInjection(uint64_t addr) {
-        uint64_t ErrorMask = 0;
 
+        ErrorMask = (uint64_t)0;
         SetRecvAddress(addr);
+
 
         ErrorMask |= HardFaultError();
 
@@ -71,15 +72,15 @@ namespace dramfaultsim {
     }
 
     void NaiveFaultModel::HardFaultErrorGenerator() {
-        uint64_t num_all_cell =
+        num_all_cell =
                 (uint64_t) config_.channels * (uint64_t) config_.ranks * (uint64_t) config_.bankgroups *
                 (uint64_t) config_.banks_per_group * (uint64_t) config_.rows *
                 (uint64_t) config_.columns * (uint64_t) config_.bus_width;
 
-        uint64_t num_hard_fault_cell = (uint64_t) ((double) num_all_cell * config_.hard_fault_rate / 100);
+        num_hard_fault_cell = (uint64_t) ((double) num_all_cell * config_.hard_fault_rate / 100);
 
-        std::cout << num_all_cell << std::endl;
-        std::cout << num_hard_fault_cell << std::endl;
+        //std::cout << num_all_cell << std::endl;
+        //std::cout << num_hard_fault_cell << std::endl;
 
         if(config_.thread_model == "SingleThread"){
             for (uint64_t i = 0; i < num_hard_fault_cell; i++) {

@@ -89,6 +89,10 @@ namespace dramfaultsim {
     private:
         FaultStruct ******fault_map_;
         std::random_device rd;
+
+        uint64_t ErrorMask;
+        uint64_t num_all_cell;
+        uint64_t num_hard_fault_cell;
 #ifdef TEST_MODE
         std::mt19937_64 gen;
 #endif
