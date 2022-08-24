@@ -3,24 +3,22 @@
 //
 #include "common.h"
 #include "configuration.h"
+#include "faultmap.h"
 
 #ifndef DRAMFAULTSIM_FAULTMODEL_H
 #define DRAMFAULTSIM_FAULTMODEL_H
 namespace dramfaultsim {
 
-    typedef struct FaultStruct {
-        uint64_t hardfault;
-
-    } FaultStruct;
 
     class FaultModel {
     public:
         FaultModel(Config &config, uint64_t ******data_block)
-                : config_(config), data_block_(data_block) {}
+                : config_(config), data_block_(data_block) {};
         virtual ~FaultModel(){};
 
         virtual uint64_t ErrorInjection(uint64_t addr) = 0;
         virtual uint64_t HardFaultError() = 0;
+        //virtual uint64_t VRTError() = 0;
 
         double GetRandomDobule(double low, double high){
             std::uniform_real_distribution<> dist(low, high);
@@ -74,15 +72,21 @@ namespace dramfaultsim {
     public:
         NaiveFaultModel(Config &config, uint64_t ******data_block);
 
-        ~NaiveFaultModel();
+        ~NaiveFaultModel() override;
 
         uint64_t ErrorInjection(uint64_t addr) override;
 
         uint64_t HardFaultError() override;
 
-        void HardFaultErrorGenerator();
+        //uint64_t VRTError() override;
 
-        void HardFaultErrorGeneratorThread(uint64_t num_generate);
+        void HardFaultGenerator();
+
+        void HardFaultGeneratorThread(uint64_t num_generate);
+
+        void VRTErrorGenerator();
+
+        void VRTErrorGeneratorThread(uint64_t num_generate_low, uint64_t num_generate_mid, uint64_t num_generate_high);
 
     protected:
 
@@ -93,6 +97,11 @@ namespace dramfaultsim {
         uint64_t ErrorMask;
         uint64_t num_all_cell;
         uint64_t num_hard_fault_cell;
+        uint64_t num_vrt_fault_cell;
+        uint64_t num_vrt_fault_low_cell;
+        uint64_t num_vrt_fault_mid_cell;
+        uint64_t num_vrt_fault_high_cell;
+
 #ifdef TEST_MODE
         std::mt19937_64 gen;
 #endif

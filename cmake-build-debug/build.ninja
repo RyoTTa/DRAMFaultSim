@@ -52,7 +52,7 @@ build cmake_object_order_depends_target_dramfaultsim: phony || CMakeFiles/dramfa
 build CMakeFiles/dramfaultsim.dir/src/common.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/common.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/common.cc.o.d
-  FLAGS = -g -fPIC -Wall -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -60,7 +60,7 @@ build CMakeFiles/dramfaultsim.dir/src/common.cc.o: CXX_COMPILER__dramfaultsim_De
 build CMakeFiles/dramfaultsim.dir/src/configuration.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/configuration.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/configuration.cc.o.d
-  FLAGS = -g -fPIC -Wall -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -68,7 +68,7 @@ build CMakeFiles/dramfaultsim.dir/src/configuration.cc.o: CXX_COMPILER__dramfaul
 build CMakeFiles/dramfaultsim.dir/src/generator.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/generator.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/generator.cc.o.d
-  FLAGS = -g -fPIC -Wall -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -76,7 +76,7 @@ build CMakeFiles/dramfaultsim.dir/src/generator.cc.o: CXX_COMPILER__dramfaultsim
 build CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/memory_system.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o.d
-  FLAGS = -g -fPIC -Wall -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -84,7 +84,15 @@ build CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o: CXX_COMPILER__dramfaul
 build CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/faultmodel.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o.d
-  FLAGS = -g -fPIC -Wall -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
+  OBJECT_DIR = CMakeFiles/dramfaultsim.dir
+  OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
+
+build CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/faultmap.cc || cmake_object_order_depends_target_dramfaultsim
+  DEFINES = -Ddramfaultsim_EXPORTS
+  DEP_FILE = CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o.d
+  FLAGS = -g -fPIC -Wall -pthread -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -97,8 +105,9 @@ build CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o: CXX_COMPILER__dramfaultsi
 #############################################
 # Link the shared library ../libdramfaultsim.so
 
-build ../libdramfaultsim.so: CXX_SHARED_LIBRARY_LINKER__dramfaultsim_Debug CMakeFiles/dramfaultsim.dir/src/common.cc.o CMakeFiles/dramfaultsim.dir/src/configuration.cc.o CMakeFiles/dramfaultsim.dir/src/generator.cc.o CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o
+build ../libdramfaultsim.so: CXX_SHARED_LIBRARY_LINKER__dramfaultsim_Debug CMakeFiles/dramfaultsim.dir/src/common.cc.o CMakeFiles/dramfaultsim.dir/src/configuration.cc.o CMakeFiles/dramfaultsim.dir/src/generator.cc.o CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o
   LANGUAGE_COMPILE_FLAGS = -g
+  LINK_LIBRARIES = -pthread
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -118,7 +127,7 @@ build cmake_object_order_depends_target_dramfaultsimmain: phony || cmake_object_
 
 build CMakeFiles/dramfaultsimmain.dir/src/main.cc.o: CXX_COMPILER__dramfaultsimmain_Debug /home/ryotta205/git/DRAMFaultSim/src/main.cc || cmake_object_order_depends_target_dramfaultsimmain
   DEP_FILE = CMakeFiles/dramfaultsimmain.dir/src/main.cc.o.d
-  FLAGS = -g -std=c++11
+  FLAGS = -g -pthread -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/src -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsimmain.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsimmain.dir/src
@@ -134,7 +143,7 @@ build CMakeFiles/dramfaultsimmain.dir/src/main.cc.o: CXX_COMPILER__dramfaultsimm
 build dramfaultsimmain: CXX_EXECUTABLE_LINKER__dramfaultsimmain_Debug CMakeFiles/dramfaultsimmain.dir/src/main.cc.o | ../libdramfaultsim.so || ../libdramfaultsim.so
   FLAGS = -g
   LINK_FLAGS = -rdynamic
-  LINK_LIBRARIES = -Wl,-rpath,/home/ryotta205/git/DRAMFaultSim  ../libdramfaultsim.so
+  LINK_LIBRARIES = -Wl,-rpath,/home/ryotta205/git/DRAMFaultSim  ../libdramfaultsim.so  -pthread
   OBJECT_DIR = CMakeFiles/dramfaultsimmain.dir
   POST_BUILD = :
   PRE_LINK = :
@@ -194,14 +203,14 @@ build all: phony ../libdramfaultsim.so dramfaultsimmain
 #############################################
 # Re-run CMake if any of its inputs changed.
 
-build build.ninja: RERUN_CMAKE | ../CMakeLists.txt /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake
+build build.ninja: RERUN_CMAKE | ../CMakeLists.txt /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CheckCXXSourceCompiles.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CheckIncludeFileCXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CheckLibraryExists.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/FindPackageMessage.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/FindThreads.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake
   pool = console
 
 
 #############################################
 # A missing CMake input file is not an error.
 
-build ../CMakeLists.txt /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake: phony
+build ../CMakeLists.txt /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCXXInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeCommonLanguageInclude.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeGenericSystem.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeInitializeConfigs.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeLanguageInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInformation.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CMakeSystemSpecificInitialize.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CheckCXXSourceCompiles.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CheckIncludeFileCXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/CheckLibraryExists.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/CMakeCommonCompilerMacros.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Compiler/GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/FindPackageHandleStandardArgs.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/FindPackageMessage.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/FindThreads.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Internal/CheckSourceCompiles.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU-CXX.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux-GNU.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/Linux.cmake /home/ryotta205/Downloads/clion-2022.1.1/bin/cmake/linux/share/cmake-3.22/Modules/Platform/UnixPaths.cmake CMakeCache.txt CMakeFiles/3.22.3/CMakeCXXCompiler.cmake CMakeFiles/3.22.3/CMakeSystem.cmake: phony
 
 
 #############################################

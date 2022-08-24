@@ -26,6 +26,9 @@ namespace dramfaultsim {
                             for (int f = 0; f < config_.columns; f++) {
                                 //fault_map_[i][j][k][q][e][f].hardfault = 0xffffffffffffffff;
                                 fault_map_[i][j][k][q][e][f].hardfault = 0x0;
+                                fault_map_[i][j][k][q][e][f].vrt_low = 0x0;
+                                fault_map_[i][j][k][q][e][f].vrt_mid = 0x0;
+                                fault_map_[i][j][k][q][e][f].vrt_high = 0x0;
                             }
                         }
                     }
@@ -37,10 +40,28 @@ namespace dramfaultsim {
         num_all_cell = 0;
         num_hard_fault_cell = 0;
 
-        HardFaultErrorGenerator();
+#ifdef TEST_MODE
+        std::cout << "HardFaultGenerator" << std::endl;
+#endif
+        HardFaultGenerator();
+#ifdef TEST_MODE
+        std::cout << "VRTFaultGenerator" << std::endl;
+#endif
+        VRTErrorGenerator();
     }
 
     NaiveFaultModel::~NaiveFaultModel() {
+        if (!config_.faultmap_write_path.empty()) {
+            FaultMapWriter *writer_ = new FaultMapWriter(config_, config_.faultmap_write_path,
+            fault_map_);
+
+            std::cout << "Write On" << std::endl;
+
+            writer_->Write();
+        }
+
+        std::cout << "NaiveFaultModel destructor" << std::endl;
+
         for (int i = 0; i < config_.channels; i++) {
             for (int j = 0; j < config_.ranks; j++) {
                 for (int k = 0; k < config_.bankgroups; k++) {
@@ -75,7 +96,7 @@ namespace dramfaultsim {
 [recv_addr_bank][recv_addr_row][recv_addr_column].hardfault;
     }
 
-    void NaiveFaultModel::HardFaultErrorGenerator() {
+    void NaiveFaultModel::HardFaultGenerator() {
         num_all_cell =
                 (uint64_t) config_.channels * (uint64_t) config_.ranks * (uint64_t) config_.bankgroups *
                 (uint64_t) config_.banks_per_group * (uint64_t) config_.rows *
@@ -83,17 +104,14 @@ namespace dramfaultsim {
 
         num_hard_fault_cell = (uint64_t) ((double) num_all_cell * config_.hard_fault_rate / 100);
 
-        //std::cout << num_all_cell << std::endl;
-        //std::cout << num_hard_fault_cell << std::endl;
-
         if (config_.thread_model == "SingleThread") {
-            HardFaultErrorGeneratorThread(num_hard_fault_cell);
+            HardFaultGeneratorThread(num_hard_fault_cell);
         } else if (config_.thread_model == "MultiThread") {
             std::thread _t[config_.thread_num];
 
             for (int i = 0; i < config_.thread_num; i++) {
-                _t[i] = std::thread(&NaiveFaultModel::HardFaultErrorGeneratorThread, this,
-                                    num_hard_fault_cell / (uint64_t)config_.thread_num);
+                _t[i] = std::thread(&NaiveFaultModel::HardFaultGeneratorThread, this,
+                                    num_hard_fault_cell / (uint64_t) config_.thread_num);
             }
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i].join();
@@ -104,7 +122,7 @@ namespace dramfaultsim {
 
     }
 
-    void NaiveFaultModel::HardFaultErrorGeneratorThread(uint64_t num_generate) {
+    void NaiveFaultModel::HardFaultGeneratorThread(uint64_t num_generate) {
         for (uint64_t i = 0; i < num_generate; i++) {
             int channel, rank, bankgroup, bankpergroup, row, column, bit;
             channel = GetRandomInt(0, (config_.channels - 1));
@@ -119,6 +137,77 @@ namespace dramfaultsim {
             //std::cout << channel << rank << bankgroup << bankpergroup << row << column << bit << std::endl;
             //std::cout<<fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault<<std::endl;
             //std::cout << i << std::endl;
+        }
+    }
+
+    void NaiveFaultModel::VRTErrorGenerator() {
+        num_vrt_fault_cell = num_hard_fault_cell;
+
+        num_vrt_fault_low_cell = num_vrt_fault_cell / 3;
+        num_vrt_fault_mid_cell = num_vrt_fault_cell / 3;
+        num_vrt_fault_high_cell = num_vrt_fault_cell / 3;
+
+        //std::cout << num_all_cell << std::endl;
+        //std::cout << num_hard_fault_cell << std::endl;
+
+        if (config_.thread_model == "SingleThread") {
+            VRTErrorGeneratorThread(num_vrt_fault_low_cell, num_vrt_fault_mid_cell,
+                                    num_vrt_fault_high_cell);
+        } else if (config_.thread_model == "MultiThread") {
+            std::thread _t[config_.thread_num];
+
+            for (int i = 0; i < config_.thread_num; i++) {
+                _t[i] = std::thread(&NaiveFaultModel::VRTErrorGeneratorThread, this,
+                                    num_vrt_fault_low_cell / (uint64_t) config_.thread_num,
+                                    num_vrt_fault_mid_cell / (uint64_t) config_.thread_num,
+                                    num_vrt_fault_high_cell / (uint64_t) config_.thread_num);
+            }
+            for (int i = 0; i < config_.thread_num; i++) {
+                _t[i].join();
+            }
+        }
+
+    }
+
+    void NaiveFaultModel::VRTErrorGeneratorThread(uint64_t num_generate_low, uint64_t num_generate_mid,
+                                                  uint64_t num_generate_high) {
+        for (uint64_t i = 0; i < num_generate_low; i++) {
+            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            channel = GetRandomInt(0, (config_.channels - 1));
+            rank = GetRandomInt(0, (config_.ranks - 1));
+            bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
+            bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
+            row = GetRandomInt(0, (config_.rows - 1));
+            column = GetRandomInt(0, (config_.columns - 1));
+            bit = GetRandomInt(0, (config_.bus_width - 1));
+
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].vrt_low |= ((uint64_t) 1 << bit);
+        }
+
+        for (uint64_t i = 0; i < num_generate_mid; i++) {
+            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            channel = GetRandomInt(0, (config_.channels - 1));
+            rank = GetRandomInt(0, (config_.ranks - 1));
+            bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
+            bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
+            row = GetRandomInt(0, (config_.rows - 1));
+            column = GetRandomInt(0, (config_.columns - 1));
+            bit = GetRandomInt(0, (config_.bus_width - 1));
+
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].vrt_mid |= ((uint64_t) 1 << bit);
+        }
+
+        for (uint64_t i = 0; i < num_generate_high; i++) {
+            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            channel = GetRandomInt(0, (config_.channels - 1));
+            rank = GetRandomInt(0, (config_.ranks - 1));
+            bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
+            bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
+            row = GetRandomInt(0, (config_.rows - 1));
+            column = GetRandomInt(0, (config_.columns - 1));
+            bit = GetRandomInt(0, (config_.bus_width - 1));
+
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].vrt_high |= ((uint64_t) 1 << bit);
         }
     }
 }

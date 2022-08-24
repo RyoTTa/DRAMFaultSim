@@ -48,6 +48,10 @@ namespace dramfaultsim {
         std::string thread_model;
         int thread_num;
 
+        // For Fault Map Read and Write
+        std::string faultmap_read_path;
+        std::string faultmap_write_path;
+
         // Computed parameters
         int request_size_bytes;
 

@@ -29,6 +29,14 @@ int main(int argc, const char **argv) {
             parser, "trace",
             "Trace file, setting this option will ignore -s option",
             {'t', "trace"});
+    args::ValueFlag<std::string> faultmap_file_read_arg(
+            parser, "fault map read path",
+            "DRAM Fault-Map file, path to read DRAM Fault-Map file",
+            {'r', "fmread"});
+    args::ValueFlag<std::string> faultmap_file_write_arg(
+            parser, "fault map write path",
+            "DRAM Fault-Map file, path to write DRAM Fault-Map file",
+            {'w', "fmwrite"});
     args::ValueFlag<std::string> config_arg(
             parser, "config", "The config file name (mandatory)",
             {'c', "config"});
@@ -53,15 +61,31 @@ int main(int argc, const char **argv) {
 
     uint64_t request = args::get(num_request_arg);
     std::string output_dir = args::get(output_dir_arg);
-    std::string trace_file = args::get(trace_file_arg);
+    std::string trace_file_path = args::get(trace_file_arg);
     std::string stream_type = args::get(stream_arg);
+    std::string faultmap_read_path = args::get(faultmap_file_read_arg);
+    std::string faultmap_write_path = args::get(faultmap_file_write_arg);
 
     Config *config = new Config(config_file, output_dir, request);
+
+    if (!faultmap_read_path.empty()){
+#ifdef TEST_MODE
+        std::cout << "Fafult Map Read from the path" << std::endl;
+#endif
+        config->faultmap_read_path = faultmap_read_path;
+    }
+    if (!faultmap_write_path.empty()){
+#ifdef TEST_MODE
+        std::cout << "Fafult Map Write from the path" << std::endl;
+#endif
+        config->faultmap_write_path = faultmap_write_path;
+    }
+
 #ifdef TEST_MODE
     config->PrintInfo();
 #endif
     Generator *generator;
-    if (!trace_file.empty()) {
+    if (!trace_file_path.empty()) {
         std::cout << "TraceBasedGenerator" << std::endl;
     } else {
         if (stream_type == "stream" || stream_type == "s") {

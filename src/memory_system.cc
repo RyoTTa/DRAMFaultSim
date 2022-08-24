@@ -41,6 +41,8 @@ namespace dramfaultsim {
 
     NaiveMemorySystem::~NaiveMemorySystem() {
 
+        std::cout << "NaiveMemorySystem destructor" << std::endl;
+
         for (int i = 0; i < config_.channels; i++) {
             for (int j = 0; j < config_.ranks; j++) {
                 for (int k = 0; k < config_.bankgroups; k++) {
@@ -77,6 +79,9 @@ namespace dramfaultsim {
         fault_mask = faultmodel_->ErrorInjection(addr);
         fault_data = MemorySystem::FaultData(data);
 
+
+
+#ifdef TEST_MODE
         if(fault_mask != (uint64_t)0){
             std::cout << "CorrectData: 0x" << std::hex << data << std::dec << std::endl;
             std::cout << "CorrectData: 0b" << std::bitset<64>(data) << std::endl << std::endl;
@@ -87,16 +92,6 @@ namespace dramfaultsim {
             std::cout << "ErrorData  : 0x" << std::hex << fault_data << std::dec << std::endl;
             std::cout << "ErrorData  : 0b" << std::bitset<64>(fault_data) << std::endl << std::endl;
         }
-
-#ifdef TEST_MODE
-        std::cout << "CorrectData: 0x" << std::hex << data << std::dec << std::endl;
-        std::cout << "CorrectData: 0b" << std::bitset<64>(data) << std::endl << std::endl;
-
-        std::cout << "ErrorMask  : 0x" << std::hex << fault_mask << std::dec << std::endl;
-        std::cout << "ErrorMask  : 0b" << std::bitset<64>(fault_mask) << std::endl << std::endl;
-
-        std::cout << "ErrorData  : 0x" << std::hex << fault_data << std::dec << std::endl;
-        std::cout << "ErrorData  : 0b" << std::bitset<64>(fault_data) << std::endl << std::endl;
 #endif
         return;
     }
