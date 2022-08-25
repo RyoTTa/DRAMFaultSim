@@ -26,6 +26,12 @@ namespace dramfaultsim {
         delete (reader_);
     }
 
+    Config::~Config() {
+#ifdef TEST_MODE
+        std::cout << "Config destructor" << std::endl;
+#endif
+    }
+
     Address Config::AddressMapping(uint64_t hex_addr) const {
         uint64_t origin_hex_addr = hex_addr;
         hex_addr >>= shift_bits;
@@ -44,7 +50,7 @@ namespace dramfaultsim {
     }
 
     double Config::GetDouble(const std::string &sec, const std::string &opt,
-                           double default_val) const {
+                             double default_val) const {
         return static_cast<double>(reader_->GetReal(sec, opt, default_val));
     }
 
@@ -107,7 +113,7 @@ namespace dramfaultsim {
             ranks = channel_size / megs_per_rank;
             channel_size = ranks * megs_per_rank;
         }
-        effective_addr_mask = ((uint64_t)1 << (LogBase2(channel_size) + LogBase2(1024) + LogBase2(1024))) - 1;
+        effective_addr_mask = ((uint64_t) 1 << (LogBase2(channel_size) + LogBase2(1024) + LogBase2(1024))) - 1;
 #ifdef TEST_MODE
         std::cout << "####TEST_MODE OUTPUT" << std::endl;
         std::cout << "####CalculateSize in Configuration" << std::endl;

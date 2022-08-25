@@ -76,7 +76,7 @@ int main(int argc, const char **argv) {
     }
     if (!faultmap_write_path.empty()){
 #ifdef TEST_MODE
-        std::cout << "Fafult Map Write from the path" << std::endl;
+        std::cout << "Fafult Map Write to the path" << std::endl;
 #endif
         config->faultmap_write_path = faultmap_write_path;
     }
@@ -106,4 +106,7 @@ int main(int argc, const char **argv) {
     std::cout << "Main Function End" << std::endl;
 #endif  // TEST_MODE
 
+
+    delete generator;
+    delete config;
 }

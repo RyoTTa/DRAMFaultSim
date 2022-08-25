@@ -14,6 +14,8 @@ namespace dramfaultsim {
         //Basic Function
         Config(std::string config_file, std::string out_dir, uint64_t request);
 
+        ~Config();
+
         Address AddressMapping(uint64_t hex_addr) const;
 
         void PrintInfo();

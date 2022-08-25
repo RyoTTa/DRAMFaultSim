@@ -40,8 +40,10 @@ namespace dramfaultsim {
     }
 
     NaiveMemorySystem::~NaiveMemorySystem() {
-
+#ifdef TEST_MODE
         std::cout << "NaiveMemorySystem destructor" << std::endl;
+#endif
+        delete faultmodel_;
 
         for (int i = 0; i < config_.channels; i++) {
             for (int j = 0; j < config_.ranks; j++) {

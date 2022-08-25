@@ -60,7 +60,7 @@ namespace dramfaultsim {
     public:
         NaiveMemorySystem(Config &config);
 
-        ~NaiveMemorySystem();
+        ~NaiveMemorySystem() override;
 
         void RecvRequest(uint64_t addr, bool is_write, uint64_t data) override;
         void Read(uint64_t data) override;

@@ -32,7 +32,7 @@ namespace dramfaultsim {
     class RandomGenerator : public Generator {
     public:
         RandomGenerator(Config &config);
-        virtual ~RandomGenerator(){};
+        ~RandomGenerator() override;
 
         bool AccessMemory() override;
 

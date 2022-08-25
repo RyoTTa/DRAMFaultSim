@@ -18,11 +18,25 @@ namespace dramfaultsim {
             reader_.close();
         }
 
+        FaultStruct ****** Read();
+
     private:
         Config &config_;
         std::string path_;
         std::ifstream reader_;
         FaultStruct ****** fault_map_;
+
+        int channel_size;
+        int channels;
+        int ranks;
+        int bankgroups;
+        int banks_per_group;
+        int rows;
+        int columns;
+        int device_width;
+        int bus_width;
+        int devices_per_rank;
+        int BL;
     };
 
     class FaultMapWriter {

@@ -11,6 +11,7 @@ namespace dramfaultsim {
         std::mt19937_64 gen(rd());
 #endif
         //data_block_[Channel][Rank][BankGourp][Bank][Row][Col]
+
         fault_map_ = new FaultStruct *****[config_.channels];
 
         for (int i = 0; i < config_.channels; i++) {
@@ -25,10 +26,7 @@ namespace dramfaultsim {
                             fault_map_[i][j][k][q][e] = new FaultStruct[config_.columns];
                             for (int f = 0; f < config_.columns; f++) {
                                 //fault_map_[i][j][k][q][e][f].hardfault = 0xffffffffffffffff;
-                                fault_map_[i][j][k][q][e][f].hardfault = 0x0;
-                                fault_map_[i][j][k][q][e][f].vrt_low = 0x0;
-                                fault_map_[i][j][k][q][e][f].vrt_mid = 0x0;
-                                fault_map_[i][j][k][q][e][f].vrt_high = 0x0;
+                                fault_map_[i][j][k][q][e][f] = {0,0,0,0};
                             }
                         }
                     }
@@ -36,31 +34,48 @@ namespace dramfaultsim {
             }
         }
 
+        if(!config_.faultmap_read_path.empty()){
+            FaultMapReader *reader_ = new FaultMapReader(config_, config_.faultmap_read_path,
+                                                         fault_map_);
+#ifdef TEST_MODE
+            std::cout << "FaultMap Reader" << std::endl;
+#endif
+            fault_map_ = reader_->Read();
+
+            delete reader_;
+        }else{
+#ifdef TEST_MODE
+            std::cout << "HardFaultGenerator" << std::endl;
+#endif
+            HardFaultGenerator();
+#ifdef TEST_MODE
+            std::cout << "VRTFaultGenerator" << std::endl;
+#endif
+            VRTErrorGenerator();
+        }
+
         ErrorMask = 0;
         num_all_cell = 0;
         num_hard_fault_cell = 0;
-
-#ifdef TEST_MODE
-        std::cout << "HardFaultGenerator" << std::endl;
-#endif
-        HardFaultGenerator();
-#ifdef TEST_MODE
-        std::cout << "VRTFaultGenerator" << std::endl;
-#endif
-        VRTErrorGenerator();
     }
 
     NaiveFaultModel::~NaiveFaultModel() {
+#ifdef TEST_MODE
+        std::cout << "NaiveFaultModel destructor" << std::endl;
+#endif
+
         if (!config_.faultmap_write_path.empty()) {
             FaultMapWriter *writer_ = new FaultMapWriter(config_, config_.faultmap_write_path,
             fault_map_);
 
-            std::cout << "Write On" << std::endl;
-
+#ifdef TEST_MODE
+            std::cout << "FaultMap Writer" << std::endl;
+#endif
             writer_->Write();
+
+            delete writer_;
         }
 
-        std::cout << "NaiveFaultModel destructor" << std::endl;
 
         for (int i = 0; i < config_.channels; i++) {
             for (int j = 0; j < config_.ranks; j++) {

@@ -11,6 +11,13 @@ namespace dramfaultsim {
         }
 
     }
+    RandomGenerator::~RandomGenerator() {
+#ifdef TEST_MODE
+        std::cout << "RandomGenerator destructor" << std::endl;
+#endif
+
+        delete memory_system_;
+    }
 
     bool RandomGenerator::AccessMemory() {
         Generator::AccessMemory();
