@@ -77,7 +77,7 @@ namespace dramfaultsim {
         } else {
             Read(data);
         }
-
+        
         fault_mask = faultmodel_->ErrorInjection(addr);
         fault_data = MemorySystem::FaultData(data);
 

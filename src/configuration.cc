@@ -41,7 +41,36 @@ namespace dramfaultsim {
         int ba = (hex_addr >> ba_pos) & ba_mask;
         int ro = (hex_addr >> ro_pos) & ro_mask;
         int co = (hex_addr >> co_pos) & co_mask;
+
+        //std::cout << std::dec << channel << " " << rank << " " << bg << " " << ba
+                  //<< " " << ro << " " << co << std::endl;
         return Address(channel, rank, bg, ba, ro, co, origin_hex_addr);
+    }
+
+    uint64_t Config::ReverseAddressMapping(int ch, int ra, int bg, int ba, int ro, int co) {
+        uint64_t addr = 0x0;
+
+        std::map<std::string, uint64_t > field_value;
+        field_value["ch"] = (uint64_t)ch;
+        field_value["ra"] = (uint64_t)ra;
+        field_value["bg"] = (uint64_t)bg;
+        field_value["ba"] = (uint64_t)ba;
+        field_value["ro"] = (uint64_t)ro;
+        field_value["co"] = (uint64_t)co;
+
+        std::vector<std::string>::iterator itor = fields_name.begin();
+
+        for (; itor != fields_name.end(); itor++) {
+            addr = (addr << field_widths[*itor]);
+            addr |= (uint64_t)field_value[*itor];
+            std::cout << *itor <<std::endl;
+            std::cout << field_widths[*itor] <<std::endl;
+        }
+
+        addr <<= shift_bits;
+        //addr |= (uint64_t)co;
+
+        return addr;
     }
 
     int Config::GetInteger(const std::string &sec, const std::string &opt,
@@ -97,6 +126,8 @@ namespace dramfaultsim {
 
     void Config::CalculateSize() {
         // calculate rank and re-calculate channel_size
+        request_size_bytes = bus_width / 8 * BL;
+        shift_bits = LogBase2(request_size_bytes);
         devices_per_rank = bus_width / device_width;
         int page_size = columns * device_width / 8;  // page size in bytes
         int megs_per_bank = page_size * (rows / 1024) / 1024;
@@ -114,6 +145,7 @@ namespace dramfaultsim {
             channel_size = ranks * megs_per_rank;
         }
         effective_addr_mask = ((uint64_t) 1 << (LogBase2(channel_size) + LogBase2(1024) + LogBase2(1024))) - 1;
+        effective_addr_mask >>= shift_bits;
 #ifdef TEST_MODE
         std::cout << "####TEST_MODE OUTPUT" << std::endl;
         std::cout << "####CalculateSize in Configuration" << std::endl;
@@ -124,7 +156,7 @@ namespace dramfaultsim {
                   << megs_per_rank / 1024 << " GB" << std::endl;
         std::cout << "Channel Size: " << channel_size << " MB, "
                   << channel_size / 1024 << " GB" << std::endl;
-        std::cout << "Effective Addr Mask: " << effective_addr_mask << std::endl;
+        std::cout << "Effective Addr Mask: " << std::hex << effective_addr_mask << std::dec << std::endl;
         std::cout << "Effective Addr Mask: " << std::bitset<64>(effective_addr_mask) << std::endl << std::endl;
 #endif  // TEST_MODE
         return;
@@ -133,13 +165,11 @@ namespace dramfaultsim {
     void Config::SetAddressMapping() {
         // memory addresses are byte addressable, but each request comes with
         // multiple bytes because of bus width, and burst length
-        request_size_bytes = bus_width / 8 * BL;
-        shift_bits = LogBase2(request_size_bytes);
+        //request_size_bytes = bus_width / 8 * BL;
         int col_low_bits = LogBase2(BL);
         int actual_col_bits = LogBase2(columns) - col_low_bits;
 
         // has to strictly follow the order of chan, rank, bg, bank, row, col
-        std::map<std::string, int> field_widths;
         field_widths["ch"] = LogBase2(channels);
         field_widths["ra"] = LogBase2(ranks);
         field_widths["bg"] = LogBase2(bankgroups);
@@ -159,7 +189,9 @@ namespace dramfaultsim {
         for (size_t i = 0; i < address_mapping.size(); i += 2) {
             std::string token = address_mapping.substr(i, 2);
             fields.push_back(token);
+            fields_name.push_back(token);
         }
+
 
         std::map<std::string, int> field_pos;
         int pos = 0;

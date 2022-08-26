@@ -46,6 +46,23 @@ namespace dramfaultsim {
         std::mt19937_64 gen;
 #endif
     };
+
+    class SequentialGenerator : public Generator {
+    public:
+        SequentialGenerator(Config &config);
+        ~SequentialGenerator() override;
+
+        bool AccessMemory() override;
+
+    private:
+        uint64_t gen_addr;
+        uint64_t gen_data;
+        bool is_write;
+
+#ifdef TEST_MODE
+        std::mt19937_64 gen;
+#endif
+    };
 }
 
 #endif //DRAMFAULTSIM_GENERATOR_H

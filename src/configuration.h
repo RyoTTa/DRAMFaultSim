@@ -3,6 +3,7 @@
 
 #include <fstream>
 #include <string>
+#include <vector>
 #include "common.h"
 #include "INIReader.h"
 
@@ -17,6 +18,8 @@ namespace dramfaultsim {
         ~Config();
 
         Address AddressMapping(uint64_t hex_addr) const;
+
+        uint64_t ReverseAddressMapping(int ch, int ra, int bg, int ba, int ro, int co);
 
         void PrintInfo();
         //DRAM physical address structure
@@ -62,6 +65,11 @@ namespace dramfaultsim {
 
         // For Fault Model
         double hard_fault_rate;
+
+        std::map<std::string, int> field_widths;
+        std::vector<std::string> fields_name;
+
+
 
     private:
         INIReader *reader_;
