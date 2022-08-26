@@ -41,12 +41,12 @@ namespace dramfaultsim {
         Address recv_addr_;
         uint64_t ******data_block_;
 
-        uint8_t recv_addr_channel;
-        uint8_t recv_addr_rank;
-        uint8_t recv_addr_bankgroup;
-        uint8_t recv_addr_bank;
-        uint8_t recv_addr_row;
-        uint8_t recv_addr_column;
+        int recv_addr_channel;
+        int recv_addr_rank;
+        int recv_addr_bankgroup;
+        int recv_addr_bank;
+        int recv_addr_row;
+        int recv_addr_column;
 
         void SetRecvAddress(uint64_t addr) {
             recv_addr_ = config_.AddressMapping(addr);

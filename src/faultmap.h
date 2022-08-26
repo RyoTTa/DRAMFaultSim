@@ -16,6 +16,9 @@ namespace dramfaultsim {
 
         ~FaultMapReader(){
             reader_.close();
+#ifdef TEST_MODE
+            std::cout << "FaultMapReader destructor" << std::endl;
+#endif
         }
 
         FaultStruct ****** Read();
@@ -45,6 +48,9 @@ namespace dramfaultsim {
 
         ~FaultMapWriter(){
             writer_.close();
+#ifdef TEST_MODE
+            std::cout << "FaultMapWriter destructor" << std::endl;
+#endif
         }
 
         bool Write();

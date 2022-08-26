@@ -126,7 +126,8 @@ namespace dramfaultsim {
 
     void Config::CalculateSize() {
         // calculate rank and re-calculate channel_size
-        request_size_bytes = bus_width / 8 * BL;
+        //request_size_bytes = bus_width / 8 * BL; //1 Column == 64Bytes
+        request_size_bytes = bus_width / 8; //1 Column == 8Bytes
         shift_bits = LogBase2(request_size_bytes);
         devices_per_rank = bus_width / device_width;
         int page_size = columns * device_width / 8;  // page size in bytes
@@ -175,7 +176,8 @@ namespace dramfaultsim {
         field_widths["bg"] = LogBase2(bankgroups);
         field_widths["ba"] = LogBase2(banks_per_group);
         field_widths["ro"] = LogBase2(rows);
-        field_widths["co"] = actual_col_bits;
+        //field_widths["co"] = actual_col_bits; //1 Column == 64Bytes
+        field_widths["co"] = LogBase2(columns); //1 Column == 8Bytes
 
         if (address_mapping.size() != 12) {
             std::cerr << "Unknown address mapping (6 fields each 2 chars required)"

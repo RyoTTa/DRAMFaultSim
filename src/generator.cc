@@ -41,42 +41,6 @@ namespace dramfaultsim {
         std::cout << "Generate Data          : 0x" << std::hex << gen_data << std::dec << std::endl;
 #endif
 
-        //TEST
-        Address recv_addr_ = config_.AddressMapping(gen_addr);
-
-        int recv_addr_channel = recv_addr_.channel;
-        int recv_addr_rank = recv_addr_.rank;
-        int recv_addr_bankgroup = recv_addr_.bankgroup;
-        int recv_addr_bank = recv_addr_.bank;
-        int recv_addr_row = recv_addr_.row;
-        int recv_addr_column = recv_addr_.column;
-
-        std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-        std::cout << std::dec << recv_addr_channel << " " << recv_addr_rank << " " << recv_addr_bankgroup << " " << recv_addr_bank
-                  << " " << recv_addr_row << " " << recv_addr_column << std::endl;
-        std::cout << std::bitset<64>(recv_addr_.hex_addr) << std::dec << std::endl;
-
-        uint64_t recv_addr_2 = config_.ReverseAddressMapping(recv_addr_channel, recv_addr_rank, recv_addr_bankgroup,
-                                                             recv_addr_bank, recv_addr_row, recv_addr_column);
-
-        Address recv_addr_a = config_.AddressMapping(recv_addr_2);
-
-        recv_addr_channel = recv_addr_a.channel;
-        recv_addr_rank = recv_addr_a.rank;
-        recv_addr_bankgroup = recv_addr_a.bankgroup;
-        recv_addr_bank = recv_addr_a.bank;
-        recv_addr_row = recv_addr_a.row;
-        recv_addr_column = recv_addr_a.column;
-
-        std::cout << recv_addr_channel << " " << recv_addr_rank << " " << recv_addr_bankgroup << " " << recv_addr_bank
-                  << " " << recv_addr_row << " " << recv_addr_column << std::endl;
-        std::cout << std::bitset<64>(recv_addr_a.hex_addr) << std::dec << std::endl;
-
-        std::cout << "%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%%" << std::endl;
-
-
-
-        //TEST
         memory_system_->RecvRequest(gen_addr, is_write, gen_data);
 
 
