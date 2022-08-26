@@ -23,7 +23,7 @@ int main(int argc, const char **argv) {
             parser, "output_dir", "Output directory for stats files",
             {'o', "output-dir"}, ".");
     args::ValueFlag<std::string> stream_arg(
-            parser, "stream_type", "address stream generator - (random), stream",
+            parser, "stream_type", "address stream generator - (random), seq",
             {'s', "stream"}, "random");
     args::ValueFlag<std::string> trace_file_arg(
             parser, "trace",
@@ -88,8 +88,9 @@ int main(int argc, const char **argv) {
     if (!trace_file_path.empty()) {
         std::cout << "TraceBasedGenerator" << std::endl;
     } else {
-        if (stream_type == "stream" || stream_type == "s") {
-            std::cout << "StreamBasedGenerator" << std::endl;
+        if (stream_type == "seq" || stream_type == "s") {
+            std::cout << "SequentialBasedGenerator" << std::endl;
+            generator = new SequentialGenerator(*config);
         } else {
             std::cout << "RandomBasedGenerator" << std::endl;
             generator = new RandomGenerator(*config);

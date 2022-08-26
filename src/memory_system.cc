@@ -26,9 +26,18 @@ namespace dramfaultsim {
                         data_block_[i][j][k][q] = new uint64_t *[config_.rows];
                         for (int e = 0; e < config_.rows; e++) {
                             data_block_[i][j][k][q][e] = new uint64_t[config_.columns];
-                            for (int f = 0; f < config_.columns; f++) {
-                                data_block_[i][j][k][q][e][f] = gen();
+                            if(config_.data_pattern_str == "Random"){
+                                //Generate Random Data Pattern
+                                for (int f = 0; f < config_.columns; f++) {
+                                    data_block_[i][j][k][q][e][f] = gen();
+                                }
+                            }else{
+                                //Generate Configuration Data Pattern
+                                for (int f = 0; f < config_.columns; f++) {
+                                    data_block_[i][j][k][q][e][f] = config_.data_pattern;
+                                }
                             }
+
                         }
                     }
                 }
@@ -77,7 +86,7 @@ namespace dramfaultsim {
         } else {
             Read(data);
         }
-        
+
         fault_mask = faultmodel_->ErrorInjection(addr);
         fault_data = MemorySystem::FaultData(data);
 

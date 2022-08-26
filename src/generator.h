@@ -55,6 +55,7 @@ namespace dramfaultsim {
         bool AccessMemory() override;
 
     private:
+        std::random_device rd;
         uint64_t gen_addr;
         uint64_t gen_data;
         bool is_write;

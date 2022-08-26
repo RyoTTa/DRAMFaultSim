@@ -4,6 +4,7 @@
 #include <fstream>
 #include <string>
 #include <vector>
+#include <sstream>
 #include "common.h"
 #include "INIReader.h"
 
@@ -65,6 +66,8 @@ namespace dramfaultsim {
 
         // For Fault Model
         double hard_fault_rate;
+        std::string data_pattern_str; //For RandomGenerator or SequentialGenerator
+        uint64_t data_pattern;
 
         std::map<std::string, int> field_widths;
         std::vector<std::string> fields_name;

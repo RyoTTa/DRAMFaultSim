@@ -43,28 +43,26 @@ namespace dramfaultsim {
         int co = (hex_addr >> co_pos) & co_mask;
 
         //std::cout << std::dec << channel << " " << rank << " " << bg << " " << ba
-                  //<< " " << ro << " " << co << std::endl;
+        //<< " " << ro << " " << co << std::endl;
         return Address(channel, rank, bg, ba, ro, co, origin_hex_addr);
     }
 
     uint64_t Config::ReverseAddressMapping(int ch, int ra, int bg, int ba, int ro, int co) {
         uint64_t addr = 0x0;
 
-        std::map<std::string, uint64_t > field_value;
-        field_value["ch"] = (uint64_t)ch;
-        field_value["ra"] = (uint64_t)ra;
-        field_value["bg"] = (uint64_t)bg;
-        field_value["ba"] = (uint64_t)ba;
-        field_value["ro"] = (uint64_t)ro;
-        field_value["co"] = (uint64_t)co;
+        std::map<std::string, uint64_t> field_value;
+        field_value["ch"] = (uint64_t) ch;
+        field_value["ra"] = (uint64_t) ra;
+        field_value["bg"] = (uint64_t) bg;
+        field_value["ba"] = (uint64_t) ba;
+        field_value["ro"] = (uint64_t) ro;
+        field_value["co"] = (uint64_t) co;
 
         std::vector<std::string>::iterator itor = fields_name.begin();
 
         for (; itor != fields_name.end(); itor++) {
             addr = (addr << field_widths[*itor]);
-            addr |= (uint64_t)field_value[*itor];
-            std::cout << *itor <<std::endl;
-            std::cout << field_widths[*itor] <<std::endl;
+            addr |= (uint64_t) field_value[*itor];
         }
 
         addr <<= shift_bits;
@@ -120,6 +118,15 @@ namespace dramfaultsim {
         fault_model = reader.Get("fault_system", "fault_model", "NaiveFaultModel");
         thread_model = reader.Get("fault_system", "thread", "SingleThread");
         thread_num = GetInteger("fault_system", "thread_num", 5);
+
+        data_pattern_str = reader.Get("fault_system", "data_pattern", "Random");
+        if(data_pattern_str != "Random"){
+            data_pattern = std::stoull(data_pattern_str, &data_pattern, 16);
+        }
+
+
+        std::cout << "Data Pattern : " << std::hex << data_pattern << std::dec << std::endl;
+
 
         return;
     }
