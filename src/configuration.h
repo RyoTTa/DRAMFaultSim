@@ -14,7 +14,7 @@ namespace dramfaultsim {
 
     public:
         //Basic Function
-        Config(std::string config_file, std::string out_dir, uint64_t request);
+        Config(std::string config_file, std::string out_dir, uint64_t request, std::string faultmap_read_path, std::string faultmap_write_path);
 
         ~Config();
 
@@ -55,15 +55,15 @@ namespace dramfaultsim {
         std::string thread_model;
         int thread_num;
 
+        // Running Request Number
+        uint64_t num_request;
+
         // For Fault Map Read and Write
         std::string faultmap_read_path;
         std::string faultmap_write_path;
 
         // Computed parameters
         int request_size_bytes;
-
-        // Running Request Number
-        uint64_t num_request;
 
         // For Fault Model
         double hard_fault_rate;

@@ -8,8 +8,8 @@
 
 namespace dramfaultsim {
 
-    Config::Config(std::string config_file, std::string out_dir, uint64_t request)
-            : output_dir(out_dir), num_request(request), reader_(new INIReader(config_file)) {
+    Config::Config(std::string config_file, std::string out_dir, uint64_t request, std::string faultmap_read_path, std::string faultmap_write_path)
+            : output_dir(out_dir), num_request(request), faultmap_read_path(faultmap_read_path), faultmap_write_path(faultmap_write_path), reader_(new INIReader(config_file)) {
         if (reader_->ParseError() < 0) {
             std::cerr << "Can't load config file - " << config_file << std::endl;
             AbruptExit(__FILE__, __LINE__);
@@ -125,9 +125,9 @@ namespace dramfaultsim {
             data_pattern = std::stoull(data_pattern_str, &data_pattern, 16);
         }
 
-
+#ifdef TEST_MODE
         std::cout << "Data Pattern : " << std::hex << data_pattern << std::dec << std::endl;
-
+#endif
 
         return;
     }

@@ -3,6 +3,7 @@
 #include "common.h"
 #include "configuration.h"
 #include "generator.h"
+#include "stat.h"
 
 using namespace dramfaultsim;
 
@@ -61,20 +62,9 @@ int main(int argc, const char **argv) {
     std::string faultmap_read_path = args::get(faultmap_file_read_arg);
     std::string faultmap_write_path = args::get(faultmap_file_write_arg);
 
-    Config *config = new Config(config_file, output_dir, request);
+    Config *config = new Config(config_file, output_dir, request, faultmap_read_path, faultmap_write_path);
+    Stat *stat = new Stat(*config);
 
-    if (!faultmap_read_path.empty()){
-#ifdef TEST_MODE
-        std::cout << "Fafult Map Read from the path" << std::endl;
-#endif
-        config->faultmap_read_path = faultmap_read_path;
-    }
-    if (!faultmap_write_path.empty()){
-#ifdef TEST_MODE
-        std::cout << "Fafult Map Write to the path" << std::endl;
-#endif
-        config->faultmap_write_path = faultmap_write_path;
-    }
 
 #ifdef TEST_MODE
     config->PrintInfo();
@@ -101,6 +91,8 @@ int main(int argc, const char **argv) {
 #ifdef TEST_MODE
     std::cout << "Main Function End" << std::endl;
 #endif  // TEST_MODE
+
+    stat->PrintStat();
 
 
     delete generator;

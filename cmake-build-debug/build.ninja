@@ -97,6 +97,14 @@ build CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o: CXX_COMPILER__dramfaultsim_
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
 
+build CMakeFiles/dramfaultsim.dir/src/stat.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/stat.cc || cmake_object_order_depends_target_dramfaultsim
+  DEFINES = -Ddramfaultsim_EXPORTS
+  DEP_FILE = CMakeFiles/dramfaultsim.dir/src/stat.cc.o.d
+  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
+  OBJECT_DIR = CMakeFiles/dramfaultsim.dir
+  OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
+
 
 # =============================================================================
 # Link build statements for SHARED_LIBRARY target dramfaultsim
@@ -105,7 +113,7 @@ build CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o: CXX_COMPILER__dramfaultsim_
 #############################################
 # Link the shared library ../libdramfaultsim.so
 
-build ../libdramfaultsim.so: CXX_SHARED_LIBRARY_LINKER__dramfaultsim_Debug CMakeFiles/dramfaultsim.dir/src/common.cc.o CMakeFiles/dramfaultsim.dir/src/configuration.cc.o CMakeFiles/dramfaultsim.dir/src/generator.cc.o CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o
+build ../libdramfaultsim.so: CXX_SHARED_LIBRARY_LINKER__dramfaultsim_Debug CMakeFiles/dramfaultsim.dir/src/common.cc.o CMakeFiles/dramfaultsim.dir/src/configuration.cc.o CMakeFiles/dramfaultsim.dir/src/generator.cc.o CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o CMakeFiles/dramfaultsim.dir/src/stat.cc.o
   LANGUAGE_COMPILE_FLAGS = -g
   LINK_LIBRARIES = -pthread
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir

@@ -27,7 +27,7 @@ add_library(dramfaultsim SHARED
         src/generator.cc
         src/memory_system.cc
         src/faultmodel.cc
-        src/faultmap.cc)
+        src/faultmap.cc src/stat.cc src/stat.h)
 
 if (DEBUG_TRACE)
     target_compile_options(dramfaultsim PRIVATE -DDEBUG_TRACE)

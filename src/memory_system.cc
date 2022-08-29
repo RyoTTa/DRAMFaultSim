@@ -26,12 +26,12 @@ namespace dramfaultsim {
                         data_block_[i][j][k][q] = new uint64_t *[config_.rows];
                         for (int e = 0; e < config_.rows; e++) {
                             data_block_[i][j][k][q][e] = new uint64_t[config_.columns];
-                            if(config_.data_pattern_str == "Random"){
+                            if (config_.data_pattern_str == "Random") {
                                 //Generate Random Data Pattern
                                 for (int f = 0; f < config_.columns; f++) {
                                     data_block_[i][j][k][q][e][f] = gen();
                                 }
-                            }else{
+                            } else {
                                 //Generate Configuration Data Pattern
                                 for (int f = 0; f < config_.columns; f++) {
                                     data_block_[i][j][k][q][e][f] = config_.data_pattern;
@@ -90,8 +90,12 @@ namespace dramfaultsim {
         fault_mask = faultmodel_->ErrorInjection(addr);
         fault_data = MemorySystem::FaultData(data);
 
-
-
+        if (fault_mask != (uint64_t) 0) {
+            std::cout << "Address: " << recv_addr_channel << " " << recv_addr_rank << " " << recv_addr_bankgroup << " "
+                      << recv_addr_bank << " " << recv_addr_row << " " << recv_addr_column << " " << "\n";
+            std::cout << "CorrectData: 0b" << std::bitset<64>(data) << "\n";
+            std::cout << "ErrorData  : 0b" << std::bitset<64>(fault_data) << "\n\n";
+        }
 #ifdef TEST_MODE
         if(fault_mask != (uint64_t)0){
             std::cout << "CorrectData: 0x" << std::hex << data << std::dec << std::endl;

@@ -90,7 +90,6 @@ namespace dramfaultsim {
             std::cerr << "Can't write fault map file - " << path_ << std::endl;
             AbruptExit(__FILE__, __LINE__);
         }
-
     }
 
     bool FaultMapWriter::Write() {

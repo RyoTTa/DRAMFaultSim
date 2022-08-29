@@ -96,12 +96,15 @@ namespace dramfaultsim {
                         for (int e = 0; e < config_.rows; e++) {
                             for (int f = 0; f < config_.columns; f++) {
                                 Generator::AccessMemory();
+                                is_write = (gen() % 5 == 0);
                                 gen_addr = config_.ReverseAddressMapping(i,j,k,q,e,f);
 #ifdef TEST_MODE
                                 std::cout << "Generate Memory(MASK)  : 0x" << std::hex << gen_addr << std::dec << (is_write ? "  WRITE" : "  READ")<< std::endl;
                                 std::cout << "Generate Data          : 0x" << std::hex << gen_data << std::dec << std::endl;
 #endif
                                 memory_system_->RecvRequest(gen_addr, is_write, gen_data);
+
+
 
                                 if (config_.num_request == 0)
                                     continue;
