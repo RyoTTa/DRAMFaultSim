@@ -99,7 +99,7 @@ namespace dramfaultsim {
                                 gen_addr = config_.ReverseAddressMapping(i,j,k,q,e,f);
 #ifdef TEST_MODE
                                 std::cout << "Generate Memory(MASK)  : 0x" << std::hex << gen_addr << std::dec << (is_write ? "  WRITE" : "  READ")<< std::endl;
-        std::cout << "Generate Data          : 0x" << std::hex << gen_data << std::dec << std::endl;
+                                std::cout << "Generate Data          : 0x" << std::hex << gen_data << std::dec << std::endl;
 #endif
                                 memory_system_->RecvRequest(gen_addr, is_write, gen_data);
 
@@ -115,10 +115,6 @@ namespace dramfaultsim {
                 }
             }
         }
-
-
-
-
-
+        return true;
     }
 }

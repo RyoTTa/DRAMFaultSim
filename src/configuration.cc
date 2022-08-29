@@ -114,6 +114,7 @@ namespace dramfaultsim {
     void Config::InitFaultModelParams() {
         const auto &reader = *reader_;
         hard_fault_rate = GetDouble("fault_system", "hard_fault_rate", 0.001);
+        generator_system = reader.Get("fault_system", "generator_system", "RandomGenerator");
         memory_system = reader.Get("fault_system", "memory_system", "NaiveMemorySystem");
         fault_model = reader.Get("fault_system", "fault_model", "NaiveFaultModel");
         thread_model = reader.Get("fault_system", "thread", "SingleThread");
@@ -174,8 +175,9 @@ namespace dramfaultsim {
         // memory addresses are byte addressable, but each request comes with
         // multiple bytes because of bus width, and burst length
         //request_size_bytes = bus_width / 8 * BL;
-        int col_low_bits = LogBase2(BL);
-        int actual_col_bits = LogBase2(columns) - col_low_bits;
+
+        //int col_low_bits = LogBase2(BL);
+        //int actual_col_bits = LogBase2(columns) - col_low_bits;
 
         // has to strictly follow the order of chan, rank, bg, bank, row, col
         field_widths["ch"] = LogBase2(channels);

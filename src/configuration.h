@@ -50,6 +50,7 @@ namespace dramfaultsim {
         std::string output_prefix;
         std::string txt_stats_name;
         std::string memory_system;
+        std::string generator_system;
         std::string fault_model;
         std::string thread_model;
         int thread_num;

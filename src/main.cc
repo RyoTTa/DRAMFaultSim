@@ -11,9 +11,8 @@ int main(int argc, const char **argv) {
     args::ArgumentParser parser(
             "DRAM Fault Simulator.",
             "Examples: \n."
-            "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -c 100 -t "
-            "sample_trace.txt\n"
-            "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -s random -c 100");
+            "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -r faultmap.bin -n 100 -t sample.txt\n"
+            "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -n 100");
 
     args::HelpFlag help(parser, "help", "Display the help menu", {'h', "help"});
     args::ValueFlag<uint64_t> num_request_arg(parser, "num_request",
@@ -22,12 +21,9 @@ int main(int argc, const char **argv) {
     args::ValueFlag<std::string> output_dir_arg(
             parser, "output_dir", "Output directory for stats files",
             {'o', "output-dir"}, ".");
-    args::ValueFlag<std::string> stream_arg(
-            parser, "stream_type", "address stream generator - (random), seq",
-            {'s', "stream"}, "random");
     args::ValueFlag<std::string> trace_file_arg(
             parser, "trace",
-            "Trace file, setting this option will ignore -s option",
+            "Trace file, setting this option will ignore generator configuration",
             {'t', "trace"});
     args::ValueFlag<std::string> faultmap_file_read_arg(
             parser, "fault map read path",
@@ -62,7 +58,6 @@ int main(int argc, const char **argv) {
     uint64_t request = args::get(num_request_arg);
     std::string output_dir = args::get(output_dir_arg);
     std::string trace_file_path = args::get(trace_file_arg);
-    std::string stream_type = args::get(stream_arg);
     std::string faultmap_read_path = args::get(faultmap_file_read_arg);
     std::string faultmap_write_path = args::get(faultmap_file_write_arg);
 
@@ -88,7 +83,7 @@ int main(int argc, const char **argv) {
     if (!trace_file_path.empty()) {
         std::cout << "TraceBasedGenerator" << std::endl;
     } else {
-        if (stream_type == "seq" || stream_type == "s") {
+        if (config->generator_system == "SequentialGenerator") {
             std::cout << "SequentialBasedGenerator" << std::endl;
             generator = new SequentialGenerator(*config);
         } else {
