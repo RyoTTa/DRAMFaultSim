@@ -19,10 +19,10 @@ namespace dramfaultsim {
 
         virtual ~MemorySystem() {};
 
-        virtual void RecvRequest(uint64_t addr, bool is_write, uint64_t data) = 0;
-        virtual void Read(uint64_t data) = 0;
-        virtual void Write(uint64_t data) = 0;
-        uint64_t FaultData(uint64_t data);
+        virtual void RecvRequest(uint64_t addr, bool is_write, uint64_t *data) = 0;
+        virtual void Read(uint64_t *data) = 0;
+        virtual void Write(uint64_t *data) = 0;
+        void FaultData(uint64_t *data);
 
     protected:
         Config &config_;
@@ -31,7 +31,7 @@ namespace dramfaultsim {
         FaultModel *faultmodel_;
 
         //data_block_[Channel][Rank][BankGourp][Bank][Row][Col]
-        uint64_t ******data_block_;
+        uint64_t *******data_block_;
         int recv_addr_channel;
         int recv_addr_rank;
         int recv_addr_bankgroup;
@@ -40,8 +40,8 @@ namespace dramfaultsim {
         int recv_addr_column;
 
         //For FaultModel Return Value
-        uint64_t fault_mask;
-        uint64_t fault_data;
+        uint64_t *fault_mask;
+        uint64_t *fault_data;
 
         void SetRecvAddress(uint64_t addr) {
             recv_addr_ = config_.AddressMapping(addr);
@@ -64,9 +64,9 @@ namespace dramfaultsim {
 
         ~NaiveMemorySystem() override;
 
-        void RecvRequest(uint64_t addr, bool is_write, uint64_t data) override;
-        void Read(uint64_t data) override;
-        void Write(uint64_t data) override;
+        void RecvRequest(uint64_t addr, bool is_write, uint64_t *data) override;
+        void Read(uint64_t *data) override;
+        void Write(uint64_t *data) override;
 
     protected:
 

@@ -4,7 +4,7 @@
 #include "faultmap.h"
 
 namespace dramfaultsim {
-    FaultMapReader::FaultMapReader(Config &config, std::string path, FaultStruct ******fault_map)
+    FaultMapReader::FaultMapReader(Config &config, std::string path, FaultStruct *******fault_map)
             : config_(config), path_(path), fault_map_(fault_map) {
 
         reader_.open(path_, std::ios::in | std::ios::binary);
@@ -14,7 +14,7 @@ namespace dramfaultsim {
         }
     }
 
-    FaultStruct ******FaultMapReader::Read() {
+    FaultStruct *******FaultMapReader::Read() {
         reader_.read((char *) &channel_size, sizeof(config_.channel_size));
         reader_.read((char *) &channels, sizeof(config_.channels));
         reader_.read((char *) &ranks, sizeof(config_.ranks));
@@ -51,7 +51,8 @@ namespace dramfaultsim {
             config_.device_width != device_width ||
             config_.bus_width != bus_width ||
             config_.devices_per_rank != devices_per_rank ||
-            config_.BL != BL) {
+            false) {
+            //config_.BL != BL) {
 
             std::cerr << "Memory Configuration does not match (FaultMap - Config)" << path_ << std::endl;
             AbruptExit(__FILE__, __LINE__);
@@ -62,15 +63,17 @@ namespace dramfaultsim {
                 for (int k = 0; k < config_.bankgroups; k++) {
                     for (int q = 0; q < config_.banks_per_group; q++) {
                         for (int e = 0; e < config_.rows; e++) {
-                            for (int f = 0; f < config_.columns; f++) {
-                                reader_.read((char *) &(fault_map_[i][j][k][q][e][f].hardfault),
-                                             sizeof(fault_map_[i][j][k][q][e][f].hardfault));
-                                reader_.read((char *) &(fault_map_[i][j][k][q][e][f].vrt_low),
-                                             sizeof(fault_map_[i][j][k][q][e][f].vrt_low));
-                                reader_.read((char *) &(fault_map_[i][j][k][q][e][f].vrt_mid),
-                                             sizeof(fault_map_[i][j][k][q][e][f].vrt_mid));
-                                reader_.read((char *) &(fault_map_[i][j][k][q][e][f].vrt_high),
-                                             sizeof(fault_map_[i][j][k][q][e][f].vrt_high));
+                            for(int w = 0; w < config_.actual_colums; w++){
+                                for (int f = 0; f < config_.BL; f++) {
+                                    reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].hardfault),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].hardfault));
+                                    reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_low),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_low));
+                                    reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_mid),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_mid));
+                                    reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_high),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_high));
+                                }
                             }
                         }
                     }
@@ -82,7 +85,7 @@ namespace dramfaultsim {
     }
 
 
-    FaultMapWriter::FaultMapWriter(Config &config, std::string path, FaultStruct ******fault_map)
+    FaultMapWriter::FaultMapWriter(Config &config, std::string path, FaultStruct *******fault_map)
             : config_(config), path_(path), fault_map_(fault_map) {
 
         writer_.open(path_, std::ios::out | std::ios::trunc | std::ios::binary);
@@ -112,20 +115,17 @@ namespace dramfaultsim {
                 for (int k = 0; k < config_.bankgroups; k++) {
                     for (int q = 0; q < config_.banks_per_group; q++) {
                         for (int e = 0; e < config_.rows; e++) {
-                            for (int f = 0; f < config_.columns; f++) {
-                                //fault_map_[i][j][k][q][e][f].hardfault = 0x0;
-                                //fault_map_[i][j][k][q][e][f].vrt_low = 0x0;
-                                //fault_map_[i][j][k][q][e][f].vrt_mid = 0x0;
-                                //fault_map_[i][j][k][q][e][f].vrt_high = 0x0;
-                                writer_.write((char *) &(fault_map_[i][j][k][q][e][f].hardfault),
-                                             sizeof(fault_map_[i][j][k][q][e][f].hardfault));
-                                writer_.write((char *) &(fault_map_[i][j][k][q][e][f].vrt_low),
-                                             sizeof(fault_map_[i][j][k][q][e][f].vrt_low));
-                                writer_.write((char *) &(fault_map_[i][j][k][q][e][f].vrt_mid),
-                                             sizeof(fault_map_[i][j][k][q][e][f].vrt_mid));
-                                writer_.write((char *) &(fault_map_[i][j][k][q][e][f].vrt_high),
-                                             sizeof(fault_map_[i][j][k][q][e][f].vrt_high));
-
+                            for(int w = 0; w < config_.actual_colums; w++){
+                                for (int f = 0; f < config_.BL; f++) {
+                                    writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].hardfault),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].hardfault));
+                                    writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_low),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_low));
+                                    writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_mid),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_mid));
+                                    writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_high),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_high));
+                                }
                             }
                         }
                     }

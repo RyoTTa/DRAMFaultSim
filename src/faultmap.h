@@ -12,7 +12,7 @@
 namespace dramfaultsim {
     class FaultMapReader {
     public:
-        FaultMapReader( Config &config, std::string path, FaultStruct ****** fault_map);
+        FaultMapReader( Config &config, std::string path, FaultStruct ******* fault_map);
 
         ~FaultMapReader(){
             reader_.close();
@@ -21,13 +21,13 @@ namespace dramfaultsim {
 #endif
         }
 
-        FaultStruct ****** Read();
+        FaultStruct ******* Read();
 
     private:
         Config &config_;
         std::string path_;
         std::ifstream reader_;
-        FaultStruct ****** fault_map_;
+        FaultStruct ******* fault_map_;
 
         int channel_size;
         int channels;
@@ -44,7 +44,7 @@ namespace dramfaultsim {
 
     class FaultMapWriter {
     public:
-        FaultMapWriter(Config &config, std::string path, FaultStruct ****** fault_map);
+        FaultMapWriter(Config &config, std::string path, FaultStruct ******* fault_map);
 
         ~FaultMapWriter(){
             writer_.close();
@@ -59,7 +59,7 @@ namespace dramfaultsim {
         Config &config_;
         std::string path_;
         std::ofstream writer_;
-        FaultStruct ****** fault_map_;
+        FaultStruct ******* fault_map_;
     };
 }
 #endif //DRAMFAULTSIM_FAULTMAP_H

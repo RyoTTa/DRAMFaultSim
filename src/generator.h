@@ -42,7 +42,7 @@ namespace dramfaultsim {
     private:
         std::random_device rd;
         uint64_t gen_addr;
-        uint64_t gen_data;
+        uint64_t *gen_data;
         bool is_write;
 
 #ifdef TEST_MODE
@@ -60,7 +60,7 @@ namespace dramfaultsim {
     private:
         std::random_device rd;
         uint64_t gen_addr;
-        uint64_t gen_data;
+        uint64_t *gen_data;
         bool is_write;
 
 #ifdef TEST_MODE

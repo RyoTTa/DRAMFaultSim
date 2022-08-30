@@ -5,28 +5,33 @@
 #include <thread>
 
 namespace dramfaultsim {
-    NaiveFaultModel::NaiveFaultModel(Config &config, uint64_t ******data_block, Stat &stat)
+    NaiveFaultModel::NaiveFaultModel(Config &config, uint64_t *******data_block, Stat &stat)
             : FaultModel(config, data_block, stat) {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());
 #endif
-        //data_block_[Channel][Rank][BankGourp][Bank][Row][Col]
 
-        fault_map_ = new FaultStruct *****[config_.channels];
+#ifdef TEST_MODE
+        std::cout << "NaiveFaultModel" << std::endl;
+#endif
+        //data_block_[Channel][Rank][BankGourp][Bank][Row][Act_Col][BL]
+        fault_map_ = new FaultStruct ******[config_.channels];
 
         for (int i = 0; i < config_.channels; i++) {
-            fault_map_[i] = new FaultStruct ****[config_.ranks];
+            fault_map_[i] = new FaultStruct *****[config_.ranks];
             for (int j = 0; j < config_.ranks; j++) {
-                fault_map_[i][j] = new FaultStruct ***[config_.bankgroups];
+                fault_map_[i][j] = new FaultStruct ****[config_.bankgroups];
                 for (int k = 0; k < config_.bankgroups; k++) {
-                    fault_map_[i][j][k] = new FaultStruct **[config_.banks_per_group];
+                    fault_map_[i][j][k] = new FaultStruct ***[config_.banks_per_group];
                     for (int q = 0; q < config_.banks_per_group; q++) {
-                        fault_map_[i][j][k][q] = new FaultStruct *[config_.rows];
+                        fault_map_[i][j][k][q] = new FaultStruct **[config_.rows];
                         for (int e = 0; e < config_.rows; e++) {
-                            fault_map_[i][j][k][q][e] = new FaultStruct[config_.columns];
-                            for (int f = 0; f < config_.columns; f++) {
-                                //fault_map_[i][j][k][q][e][f].hardfault = 0xffffffffffffffff;
-                                fault_map_[i][j][k][q][e][f] = {0,0,0,0};
+                            fault_map_[i][j][k][q][e] = new FaultStruct *[config_.actual_colums];
+                            for (int w = 0; w < config_.actual_colums; w++) {
+                                fault_map_[i][j][k][q][e][w] = new FaultStruct[config_.BL];
+                                for (int f = 0; f < config_.BL; f++) {
+                                    fault_map_[i][j][k][q][e][w][f] = {0,0,0,0};
+                                }
                             }
                         }
                     }
@@ -34,7 +39,9 @@ namespace dramfaultsim {
             }
         }
 
-        if(!config_.faultmap_read_path.empty()){
+        ErrorMask = new uint64_t[config_.BL];
+
+        if (!config_.faultmap_read_path.empty()) {
             FaultMapReader *reader_ = new FaultMapReader(config_, config_.faultmap_read_path,
                                                          fault_map_);
 #ifdef TEST_MODE
@@ -43,7 +50,7 @@ namespace dramfaultsim {
             fault_map_ = reader_->Read();
 
             delete reader_;
-        }else{
+        } else {
 #ifdef TEST_MODE
             std::cout << "HardFaultGenerator" << std::endl;
 #endif
@@ -54,7 +61,6 @@ namespace dramfaultsim {
             VRTErrorGenerator();
         }
 
-        ErrorMask = 0;
         num_all_cell = 0;
         num_hard_fault_cell = 0;
     }
@@ -66,7 +72,7 @@ namespace dramfaultsim {
 
         if (!config_.faultmap_write_path.empty()) {
             FaultMapWriter *writer_ = new FaultMapWriter(config_, config_.faultmap_write_path,
-            fault_map_);
+                                                         fault_map_);
 
 #ifdef TEST_MODE
             std::cout << "FaultMap Writer" << std::endl;
@@ -82,6 +88,9 @@ namespace dramfaultsim {
                 for (int k = 0; k < config_.bankgroups; k++) {
                     for (int q = 0; q < config_.banks_per_group; q++) {
                         for (int e = 0; e < config_.rows; e++) {
+                            for(int w = 0; w < config_.actual_colums; w++){
+                                delete[] fault_map_[i][j][k][q][e][w];
+                            }
                             delete[] fault_map_[i][j][k][q][e];
                         }
                         delete[] fault_map_[i][j][k][q];
@@ -95,20 +104,22 @@ namespace dramfaultsim {
         delete[] fault_map_;
     }
 
-    uint64_t NaiveFaultModel::ErrorInjection(uint64_t addr) {
+    uint64_t *NaiveFaultModel::ErrorInjection(uint64_t addr) {
 
-        ErrorMask = (uint64_t) 0;
+        for (int i = 0; i < config_.BL; i++) {
+            ErrorMask[i] = 0;
+        }
         SetRecvAddress(addr);
 
-
-        ErrorMask |= HardFaultError();
+        HardFaultError();
 
         return ErrorMask;
     }
 
-    uint64_t NaiveFaultModel::HardFaultError() {
-        return fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup] \
-[recv_addr_bank][recv_addr_row][recv_addr_column].hardfault;
+    void NaiveFaultModel::HardFaultError() {
+        for (int i = 0; i < config_.BL; i++) {
+            ErrorMask[i] |= fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].hardfault;
+        }
     }
 
     void NaiveFaultModel::HardFaultGenerator() {
@@ -139,16 +150,17 @@ namespace dramfaultsim {
 
     void NaiveFaultModel::HardFaultGeneratorThread(uint64_t num_generate) {
         for (uint64_t i = 0; i < num_generate; i++) {
-            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
             channel = GetRandomInt(0, (config_.channels - 1));
             rank = GetRandomInt(0, (config_.ranks - 1));
             bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
             bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
             row = GetRandomInt(0, (config_.rows - 1));
-            column = GetRandomInt(0, (config_.columns - 1));
+            column = GetRandomInt(0, (config_.actual_colums - 1));
+            bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault |= ((uint64_t) 1 << bit);
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].hardfault |= ((uint64_t) 1 << bit);
             //std::cout << channel << rank << bankgroup << bankpergroup << row << column << bit << std::endl;
             //std::cout<<fault_map_[channel][rank][bankgroup][bankpergroup][row][column].hardfault<<std::endl;
             //std::cout << i << std::endl;
@@ -187,42 +199,45 @@ namespace dramfaultsim {
     void NaiveFaultModel::VRTErrorGeneratorThread(uint64_t num_generate_low, uint64_t num_generate_mid,
                                                   uint64_t num_generate_high) {
         for (uint64_t i = 0; i < num_generate_low; i++) {
-            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
             channel = GetRandomInt(0, (config_.channels - 1));
             rank = GetRandomInt(0, (config_.ranks - 1));
             bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
             bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
             row = GetRandomInt(0, (config_.rows - 1));
-            column = GetRandomInt(0, (config_.columns - 1));
+            column = GetRandomInt(0, (config_.actual_colums - 1));
+            bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].vrt_low |= ((uint64_t) 1 << bit);
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_low |= ((uint64_t) 1 << bit);
         }
 
         for (uint64_t i = 0; i < num_generate_mid; i++) {
-            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
             channel = GetRandomInt(0, (config_.channels - 1));
             rank = GetRandomInt(0, (config_.ranks - 1));
             bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
             bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
             row = GetRandomInt(0, (config_.rows - 1));
-            column = GetRandomInt(0, (config_.columns - 1));
+            column = GetRandomInt(0, (config_.actual_colums - 1));
+            bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].vrt_mid |= ((uint64_t) 1 << bit);
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_mid |= ((uint64_t) 1 << bit);
         }
 
         for (uint64_t i = 0; i < num_generate_high; i++) {
-            int channel, rank, bankgroup, bankpergroup, row, column, bit;
+            int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
             channel = GetRandomInt(0, (config_.channels - 1));
             rank = GetRandomInt(0, (config_.ranks - 1));
             bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
             bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
             row = GetRandomInt(0, (config_.rows - 1));
-            column = GetRandomInt(0, (config_.columns - 1));
+            column = GetRandomInt(0, (config_.actual_colums - 1));
+            bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            fault_map_[channel][rank][bankgroup][bankpergroup][row][column].vrt_high |= ((uint64_t) 1 << bit);
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_high |= ((uint64_t) 1 << bit);
         }
     }
 }

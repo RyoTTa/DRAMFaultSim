@@ -13,12 +13,12 @@ namespace dramfaultsim {
 
     class FaultModel {
     public:
-        FaultModel(Config &config, uint64_t ******data_block, Stat &stat)
+        FaultModel(Config &config, uint64_t *******data_block, Stat &stat)
                 : config_(config), data_block_(data_block), stat_(stat) {};
         virtual ~FaultModel(){};
 
-        virtual uint64_t ErrorInjection(uint64_t addr) = 0;
-        virtual uint64_t HardFaultError() = 0;
+        virtual uint64_t *ErrorInjection(uint64_t addr) = 0;
+        virtual void HardFaultError() = 0;
         //virtual uint64_t VRTError() = 0;
 
         double GetRandomDobule(double low, double high){
@@ -40,7 +40,7 @@ namespace dramfaultsim {
     protected:
         Config &config_;
         Address recv_addr_;
-        uint64_t ******data_block_;
+        uint64_t *******data_block_;
         Stat &stat_;
 
         int recv_addr_channel;
@@ -72,13 +72,13 @@ namespace dramfaultsim {
 
     class NaiveFaultModel : public FaultModel {
     public:
-        NaiveFaultModel(Config &config, uint64_t ******data_block, Stat &stat);
+        NaiveFaultModel(Config &config, uint64_t *******data_block, Stat &stat);
 
         ~NaiveFaultModel() override;
 
-        uint64_t ErrorInjection(uint64_t addr) override;
+        uint64_t *ErrorInjection(uint64_t addr) override;
 
-        uint64_t HardFaultError() override;
+        void HardFaultError() override;
 
         //uint64_t VRTError() override;
 
@@ -93,10 +93,10 @@ namespace dramfaultsim {
     protected:
 
     private:
-        FaultStruct ******fault_map_;
+        FaultStruct *******fault_map_;
         std::random_device rd;
 
-        uint64_t ErrorMask;
+        uint64_t *ErrorMask;
         uint64_t num_all_cell;
         uint64_t num_hard_fault_cell;
         uint64_t num_vrt_fault_cell;

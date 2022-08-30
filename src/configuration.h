@@ -37,6 +37,7 @@ namespace dramfaultsim {
         int bus_width;
         int devices_per_rank;
         int BL;
+        int actual_colums;
 
         // Address mapping numbers
         int shift_bits;

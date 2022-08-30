@@ -11,6 +11,8 @@ namespace dramfaultsim {
             memory_system_ = new NaiveMemorySystem(config_, stat_);
         }
 
+        gen_data = new uint64_t [config_.BL];
+
     }
 
     RandomGenerator::~RandomGenerator() {
@@ -33,20 +35,26 @@ namespace dramfaultsim {
 
         if(config_.data_pattern_str == "Random"){
             //Generate Random Data Pattern
-            gen_data = gen();
+            for(int i = 0; i < config_.BL ; i++){
+                gen_data[i] = gen();
+            }
         }else{
             //Generate Configuration Data Pattern
-            gen_data = config_.data_pattern;
+            for(int i = 0; i < config_.BL ; i++){
+                gen_data[i] = config_.data_pattern;
+            }
         }
 
         is_write = (gen() % 5 == 0);
 
-
+/*
 #ifdef TEST_MODE
         std::cout << "Generate Memory(MASK)  : 0x" << std::hex << gen_addr << std::dec << (is_write ? "  WRITE" : "  READ")<< std::endl;
-        std::cout << "Generate Data          : 0x" << std::hex << gen_data << std::dec << std::endl;
+        for (int i=0; i < config_.BL; i++){
+            std::cout << "Generate Data         "<< i <<": 0x" << std::hex << gen_data[i] << std::dec << std::endl;
+        }
 #endif
-
+*/
         memory_system_->RecvRequest(gen_addr, is_write, gen_data);
 
 
@@ -66,6 +74,8 @@ namespace dramfaultsim {
             memory_system_ = new NaiveMemorySystem(config_, stat_);
         }
 
+        gen_data = new uint64_t [config_.BL];
+
     }
 
     SequentialGenerator::~SequentialGenerator() {
@@ -81,31 +91,38 @@ namespace dramfaultsim {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());
 #endif
-        if(config_.data_pattern_str == "Random"){
-            //Generate Random Data Pattern
-            gen_data = gen();
-        }else{
-            //Generate Configuration Data Pattern
-            gen_data = config_.data_pattern;
-        }
 
         for (int i = 0; i < config_.channels; i++) {
             for (int j = 0; j < config_.ranks; j++) {
                 for (int k = 0; k < config_.bankgroups; k++) {
                     for (int q = 0; q < config_.banks_per_group; q++) {
                         for (int e = 0; e < config_.rows; e++) {
-                            for (int f = 0; f < config_.columns; f++) {
+                            for (int f = 0; f < config_.actual_colums; f++) {
                                 Generator::AccessMemory();
+
+                                if(config_.data_pattern_str == "Random"){
+                                    //Generate Random Data Pattern
+                                    for(int w = 0; w < config_.BL ; w++){
+                                        gen_data[w] = gen();
+                                    }
+                                }else{
+                                    //Generate Configuration Data Pattern
+                                    for(int w = 0; w < config_.BL ; w++){
+                                        gen_data[w] = config_.data_pattern;
+                                    }
+                                }
                                 is_write = (gen() % 5 == 0);
                                 gen_addr = config_.ReverseAddressMapping(i,j,k,q,e,f);
+                                /*
 #ifdef TEST_MODE
                                 std::cout << "Generate Memory(MASK)  : 0x" << std::hex << gen_addr << std::dec << (is_write ? "  WRITE" : "  READ")<< std::endl;
-                                std::cout << "Generate Data          : 0x" << std::hex << gen_data << std::dec << std::endl;
+                                for (int i=0; i < config_.BL; i++){
+                                    std::cout << "Generate Data         "<< i <<": 0x" << std::hex << gen_data[i] << std::dec << std::endl;
+                                }
 #endif
+                                 */
                                 memory_system_->RecvRequest(gen_addr, is_write, gen_data);
-
-
-
+                                
                                 if (config_.num_request == 0)
                                     continue;
                                 if (num_executed_request >= config_.num_request)

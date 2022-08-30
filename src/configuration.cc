@@ -134,8 +134,9 @@ namespace dramfaultsim {
 
     void Config::CalculateSize() {
         // calculate rank and re-calculate channel_size
-        //request_size_bytes = bus_width / 8 * BL; //1 Column == 64Bytes
-        request_size_bytes = bus_width / 8; //1 Column == 8Bytes
+        request_size_bytes = bus_width / 8 * BL; //1 Column == 64Bytes
+        actual_colums = columns / BL;
+        //request_size_bytes = bus_width / 8; //1 Column == 8Bytes
         shift_bits = LogBase2(request_size_bytes);
         devices_per_rank = bus_width / device_width;
         int page_size = columns * device_width / 8;  // page size in bytes
@@ -176,8 +177,8 @@ namespace dramfaultsim {
         // multiple bytes because of bus width, and burst length
         //request_size_bytes = bus_width / 8 * BL;
 
-        //int col_low_bits = LogBase2(BL);
-        //int actual_col_bits = LogBase2(columns) - col_low_bits;
+        int col_low_bits = LogBase2(BL);
+        int actual_col_bits = LogBase2(columns) - col_low_bits;
 
         // has to strictly follow the order of chan, rank, bg, bank, row, col
         field_widths["ch"] = LogBase2(channels);
@@ -185,8 +186,8 @@ namespace dramfaultsim {
         field_widths["bg"] = LogBase2(bankgroups);
         field_widths["ba"] = LogBase2(banks_per_group);
         field_widths["ro"] = LogBase2(rows);
-        //field_widths["co"] = actual_col_bits; //1 Column == 64Bytes
-        field_widths["co"] = LogBase2(columns); //1 Column == 8Bytes
+        field_widths["co"] = actual_col_bits; //1 Column == 64Bytes
+        //field_widths["co"] = LogBase2(columns); //1 Column == 8Bytes
 
         if (address_mapping.size() != 12) {
             std::cerr << "Unknown address mapping (6 fields each 2 chars required)"
@@ -242,6 +243,7 @@ namespace dramfaultsim {
         std::cout << "Bank Per Group: " << banks_per_group << std::endl;
         std::cout << "Rows: " << rows << std::endl;
         std::cout << "Columns: " << columns << std::endl;
+        std::cout << "Actual Columns: " << actual_colums << std::endl;
         std::cout << "Device Width: " << device_width << std::endl;
         std::cout << "Bus Width: " << bus_width << std::endl;
         std::cout << "Devices Per Rank: " << devices_per_rank << std::endl;
