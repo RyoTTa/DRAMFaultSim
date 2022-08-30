@@ -7,23 +7,26 @@
 #include "common.h"
 #include "configuration.h"
 #include "memory_system.h"
+#include "stat.h"
 #include <random>
 
 namespace dramfaultsim {
 
     class Generator {
     public:
-        Generator(Config &config)
-                : config_(config), num_executed_request(0) {};
+        Generator(Config &config, Stat &stat)
+                : config_(config), stat_(stat), num_executed_request(0) {};
         virtual ~Generator(){};
 
         virtual bool AccessMemory() {
             num_executed_request++;
+            stat_.executed_request_num++;
             return true;
         }
 
     protected:
         Config &config_;
+        Stat &stat_;
         MemorySystem *memory_system_;
         uint64_t num_executed_request;
 
@@ -31,7 +34,7 @@ namespace dramfaultsim {
 
     class RandomGenerator : public Generator {
     public:
-        RandomGenerator(Config &config);
+        RandomGenerator(Config &config, Stat &stat);
         ~RandomGenerator() override;
 
         bool AccessMemory() override;
@@ -49,7 +52,7 @@ namespace dramfaultsim {
 
     class SequentialGenerator : public Generator {
     public:
-        SequentialGenerator(Config &config);
+        SequentialGenerator(Config &config, Stat &stat);
         ~SequentialGenerator() override;
 
         bool AccessMemory() override;

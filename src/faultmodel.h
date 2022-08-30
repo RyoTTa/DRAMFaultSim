@@ -4,6 +4,7 @@
 #include "common.h"
 #include "configuration.h"
 #include "faultmap.h"
+#include "stat.h"
 
 #ifndef DRAMFAULTSIM_FAULTMODEL_H
 #define DRAMFAULTSIM_FAULTMODEL_H
@@ -12,8 +13,8 @@ namespace dramfaultsim {
 
     class FaultModel {
     public:
-        FaultModel(Config &config, uint64_t ******data_block)
-                : config_(config), data_block_(data_block) {};
+        FaultModel(Config &config, uint64_t ******data_block, Stat &stat)
+                : config_(config), data_block_(data_block), stat_(stat) {};
         virtual ~FaultModel(){};
 
         virtual uint64_t ErrorInjection(uint64_t addr) = 0;
@@ -40,6 +41,7 @@ namespace dramfaultsim {
         Config &config_;
         Address recv_addr_;
         uint64_t ******data_block_;
+        Stat &stat_;
 
         int recv_addr_channel;
         int recv_addr_rank;
@@ -70,7 +72,7 @@ namespace dramfaultsim {
 
     class NaiveFaultModel : public FaultModel {
     public:
-        NaiveFaultModel(Config &config, uint64_t ******data_block);
+        NaiveFaultModel(Config &config, uint64_t ******data_block, Stat &stat);
 
         ~NaiveFaultModel() override;
 

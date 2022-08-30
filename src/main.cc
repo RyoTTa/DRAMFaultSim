@@ -75,10 +75,10 @@ int main(int argc, const char **argv) {
     } else {
         if (config->generator_system == "SequentialGenerator") {
             std::cout << "SequentialBasedGenerator" << std::endl;
-            generator = new SequentialGenerator(*config);
+            generator = new SequentialGenerator(*config, *stat);
         } else {
             std::cout << "RandomBasedGenerator" << std::endl;
-            generator = new RandomGenerator(*config);
+            generator = new RandomGenerator(*config, *stat);
         }
     }
 

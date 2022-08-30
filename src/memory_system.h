@@ -8,13 +8,14 @@
 #include "common.h"
 #include "configuration.h"
 #include "faultmodel.h"
+#include "stat.h"
 
 namespace dramfaultsim {
 
     class MemorySystem {
     public:
-        MemorySystem(Config &config)
-                : config_(config) {}
+        MemorySystem(Config &config, Stat &stat)
+                : config_(config), stat_(stat) {}
 
         virtual ~MemorySystem() {};
 
@@ -25,6 +26,7 @@ namespace dramfaultsim {
 
     protected:
         Config &config_;
+        Stat &stat_;
         Address recv_addr_;
         FaultModel *faultmodel_;
 
@@ -58,7 +60,7 @@ namespace dramfaultsim {
 
     class NaiveMemorySystem : public MemorySystem {
     public:
-        NaiveMemorySystem(Config &config);
+        NaiveMemorySystem(Config &config, Stat &stat);
 
         ~NaiveMemorySystem() override;
 

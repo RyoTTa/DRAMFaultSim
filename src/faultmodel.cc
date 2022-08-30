@@ -5,8 +5,8 @@
 #include <thread>
 
 namespace dramfaultsim {
-    NaiveFaultModel::NaiveFaultModel(Config &config, uint64_t ******data_block)
-            : FaultModel(config, data_block) {
+    NaiveFaultModel::NaiveFaultModel(Config &config, uint64_t ******data_block, Stat &stat)
+            : FaultModel(config, data_block, stat) {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());
 #endif

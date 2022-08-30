@@ -9,7 +9,7 @@ namespace dramfaultsim {
         return data ^ fault_mask;
     }
 
-    NaiveMemorySystem::NaiveMemorySystem(Config &config) : MemorySystem(config) {
+    NaiveMemorySystem::NaiveMemorySystem(Config &config, Stat &stat) : MemorySystem(config, stat) {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());
 #endif
@@ -44,7 +44,7 @@ namespace dramfaultsim {
             }
         }
         if (config_.fault_model == "NaiveFaultModel") {
-            faultmodel_ = new NaiveFaultModel(config_, data_block_);
+            faultmodel_ = new NaiveFaultModel(config_, data_block_, stat_);
         }
     }
 
@@ -91,10 +91,9 @@ namespace dramfaultsim {
         fault_data = MemorySystem::FaultData(data);
 
         if (fault_mask != (uint64_t) 0) {
-            std::cout << "Address: " << recv_addr_channel << " " << recv_addr_rank << " " << recv_addr_bankgroup << " "
-                      << recv_addr_bank << " " << recv_addr_row << " " << recv_addr_column << " " << "\n";
-            std::cout << "CorrectData: 0b" << std::bitset<64>(data) << "\n";
-            std::cout << "ErrorData  : 0b" << std::bitset<64>(fault_data) << "\n\n";
+            stat_.fault_request_num++;
+        }else{
+            stat_.correct_request_num++;
         }
 #ifdef TEST_MODE
         if(fault_mask != (uint64_t)0){

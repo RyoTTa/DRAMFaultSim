@@ -5,10 +5,10 @@
 #include <bitset>
 
 namespace dramfaultsim {
-    RandomGenerator::RandomGenerator(Config &config)
-            : Generator(config) {
+    RandomGenerator::RandomGenerator(Config &config, Stat &stat)
+            : Generator(config, stat) {
         if (config_.memory_system == "NaiveMemorySystem") {
-            memory_system_ = new NaiveMemorySystem(config_);
+            memory_system_ = new NaiveMemorySystem(config_, stat_);
         }
 
     }
@@ -60,10 +60,10 @@ namespace dramfaultsim {
 
     }
 
-    SequentialGenerator::SequentialGenerator(Config &config)
-            : Generator(config) {
+    SequentialGenerator::SequentialGenerator(Config &config, Stat &stat)
+            : Generator(config, stat) {
         if (config_.memory_system == "NaiveMemorySystem") {
-            memory_system_ = new NaiveMemorySystem(config_);
+            memory_system_ = new NaiveMemorySystem(config_, stat_);
         }
 
     }
