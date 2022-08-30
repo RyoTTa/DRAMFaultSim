@@ -53,10 +53,17 @@ namespace dramfaultsim{
         << std::setw(40) << "Generator System: " << generator_system << "\n"
         << std::setw(40) << "Memory System: " << memory_system << "\n"
         << std::setw(40) << "Fault Model: " << fault_model << "\n"
+        << std::setw(40) << "Hard Fault Rate: " << hard_fault_rate << "\n"
         << std::setw(40) << "Data Pattern: " << data_pattern_str << "\n"
+
         << std::setw(40) << "Number of Executed Requests: " << executed_request_num << "\n"
         << std::setw(40) << "Number of Fault Requests: " << fault_request_num << "\n"
         << std::setw(40) << "Number of Correct Request: " << correct_request_num << "\n"
+        << std::setw(40) << "Fault Rate of Request(BL): " << (double)fault_request_num / (double)executed_request_num << "\n"
+        << std::setw(40) << "Number of Executed Columns: " << executed_column_num << "\n"
+        << std::setw(40) << "Number of Fault Columns: " << fault_column_num << "\n"
+        << std::setw(40) << "Number of Correct Columns: " << correct_column_num << "\n"
+        << std::setw(40) << "Fault Rate of Column: " << (double)fault_column_num / (double)executed_column_num << "\n"
         << std::endl;
     }
 }

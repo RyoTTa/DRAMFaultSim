@@ -68,6 +68,8 @@ namespace dramfaultsim {
         void Read(uint64_t *data) override;
         void Write(uint64_t *data) override;
 
+        void CheckFaultMask(int fault_num);
+
     protected:
 
 

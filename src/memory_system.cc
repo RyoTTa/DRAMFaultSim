@@ -104,35 +104,43 @@ namespace dramfaultsim {
         fault_mask = faultmodel_->ErrorInjection(addr);
         MemorySystem::FaultData(data);
 
-        int temp = 0;
+        int fault_columns_num = 0;
         for (int i = 0; i < config_.BL; i++) {
             if (fault_mask[i] != (uint64_t) 0) {
-                temp = 1;
+                fault_columns_num++;
             }
         }
 
-        if (temp) {
+        CheckFaultMask(fault_columns_num);
+
+        return;
+    }
+
+    void NaiveMemorySystem::CheckFaultMask(int fault_columns_num) {
+        if (fault_columns_num) {
             stat_.fault_request_num++;
+            stat_.fault_column_num += fault_columns_num;
+            stat_.correct_column_num += config_.BL - fault_columns_num;
             std::cout << "Request  : 0x" << std::hex << recv_addr_.hex_addr << std::dec << std::endl;
             std::cout << "Request  :   " << recv_addr_channel << recv_addr_rank << recv_addr_bankgroup
-            << recv_addr_bank << recv_addr_row << recv_addr_column << std::endl;
+                      << recv_addr_bank << recv_addr_row << recv_addr_column << std::endl;
             std::cout << "Request  :   " << recv_addr_.channel << recv_addr_.rank << recv_addr_.bankgroup
                       << recv_addr_.bank << recv_addr_.row << recv_addr_.column << std::endl;
-            for (int i=0; i < config_.BL; i++){
-                std::cout << "Correct Data   "<< i <<": 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
-            [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] << std::dec << std::endl;
+            for (int i = 0; i < config_.BL; i++) {
+                std::cout << "Correct Data   " << i << ": 0x" << std::hex
+                          << data_block_[recv_addr_channel][recv_addr_rank]\
+[recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] << std::dec << std::endl;
             }
-            for (int i=0; i < config_.BL; i++){
-                std::cout << "Fault Mask     "<< i <<": 0x" << std::hex << fault_mask[i] << std::dec << std::endl;
+            for (int i = 0; i < config_.BL; i++) {
+                std::cout << "Fault Mask     " << i << ": 0x" << std::hex << fault_mask[i] << std::dec << std::endl;
             }
-            for (int i=0; i < config_.BL; i++){
-                std::cout << "Fault Data   "<< i <<": 0x" << std::hex << fault_data[i] << std::dec << std::endl;
+            for (int i = 0; i < config_.BL; i++) {
+                std::cout << "Fault Data   " << i << ": 0x" << std::hex << fault_data[i] << std::dec << std::endl;
             }
         } else {
             stat_.correct_request_num++;
+            stat_.correct_column_num += config_.BL;
         }
-
-        return;
     }
 
     void NaiveMemorySystem::Read(uint64_t *data) {

@@ -21,6 +21,7 @@ namespace dramfaultsim {
         virtual bool AccessMemory() {
             num_executed_request++;
             stat_.executed_request_num++;
+            stat_.executed_column_num += config_.BL;
             return true;
         }
 

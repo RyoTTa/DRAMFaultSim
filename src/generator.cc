@@ -122,7 +122,7 @@ namespace dramfaultsim {
 #endif
                                  */
                                 memory_system_->RecvRequest(gen_addr, is_write, gen_data);
-                                
+
                                 if (config_.num_request == 0)
                                     continue;
                                 if (num_executed_request >= config_.num_request)

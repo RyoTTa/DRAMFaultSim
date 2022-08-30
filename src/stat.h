@@ -40,6 +40,10 @@ namespace dramfaultsim{
         uint64_t fault_request_num;
         uint64_t correct_request_num;
 
+        uint64_t executed_column_num;
+        uint64_t fault_column_num;
+        uint64_t correct_column_num;
+
         uint64_t single_fault_in_column_num;
         uint64_t double_fault_in_column_num;
         uint64_t triple_fault_in_column_num;
