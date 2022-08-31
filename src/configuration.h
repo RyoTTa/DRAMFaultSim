@@ -60,7 +60,6 @@ namespace dramfaultsim {
 
         // Running Request Number
         uint64_t num_request;
-        int repeat_round;
 
         // For Fault Map Read and Write
         std::string faultmap_read_path;

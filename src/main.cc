@@ -4,6 +4,7 @@
 #include "configuration.h"
 #include "generator.h"
 #include "stat.h"
+#include "faultresult.h"
 
 using namespace dramfaultsim;
 
@@ -74,6 +75,7 @@ int main(int argc, const char **argv) {
     Config *config = new Config(config_file, output_dir, output_prefix, request, faultmap_read_path,
                                 faultmap_write_path);
     Stat *stat = new Stat(*config);
+    FaultResult *fault_result = new FaultResult(*config, *stat);
 
 
 #ifdef TEST_MODE
@@ -85,27 +87,26 @@ int main(int argc, const char **argv) {
     } else {
         if (config->generator_system == "SequentialGenerator") {
             std::cout << "SequentialBasedGenerator" << std::endl;
-            generator = new SequentialGenerator(*config, *stat);
+            generator = new SequentialGenerator(*config, *stat, *fault_result);
         } else {
             std::cout << "RandomBasedGenerator" << std::endl;
-            generator = new RandomGenerator(*config, *stat);
+            generator = new RandomGenerator(*config, *stat, *fault_result);
         }
     }
 
-    for (int i = 0; i < repeat_round; i++) {
-        stat->ResetStat();
+    for (stat->repeat_round = 0; stat->repeat_round < repeat_round; stat->repeat_round++) {
+        fault_result->SetFaultResult();
 
-        config->repeat_round = i;
-        generator->memory_system_->ResetFaultResult();
-
-        std::cout << "Test Round: " << i << std::endl;
+        std::cout << "Test Round: " << stat->repeat_round << std::endl;
 
         bool last_request = false;
         while (!last_request) {
             last_request = generator->AccessMemory();
         }
-
         stat->PrintStat();
+
+        fault_result->ResetFaultResult();
+        stat->ResetStat();
     }
 
 

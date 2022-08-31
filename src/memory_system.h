@@ -9,13 +9,14 @@
 #include "configuration.h"
 #include "faultmodel.h"
 #include "stat.h"
+#include "faultresult.h"
 
 namespace dramfaultsim {
 
     class MemorySystem {
     public:
-        MemorySystem(Config &config, Stat &stat)
-                : config_(config), stat_(stat) {}
+        MemorySystem(Config &config, Stat &stat, FaultResult &fault_result)
+                : config_(config), stat_(stat), fault_result_(fault_result) {}
 
         virtual ~MemorySystem() {};
 
@@ -29,16 +30,12 @@ namespace dramfaultsim {
 
         virtual void CheckFaultMask() = 0;
 
-        virtual void PrintFaultResult(int BL) = 0;
-
-        virtual void ResetFaultResult() = 0;
-
     protected:
         Config &config_;
         Stat &stat_;
+        FaultResult &fault_result_;
         Address recv_addr_;
         FaultModel *faultmodel_;
-        std::ofstream writer_;
 
         //data_block_[Channel][Rank][BankGourp][Bank][Row][Col]
         uint64_t *******data_block_;
@@ -70,7 +67,7 @@ namespace dramfaultsim {
 
     class NaiveMemorySystem : public MemorySystem {
     public:
-        NaiveMemorySystem(Config &config, Stat &stat);
+        NaiveMemorySystem(Config &config, Stat &stat, FaultResult &fault_result);
 
         ~NaiveMemorySystem() override;
 
@@ -84,11 +81,8 @@ namespace dramfaultsim {
 
         void CheckFaultMask() override;
 
-        void PrintFaultResult(int BL) override;
-
         int FaultCountInColumn(int BL);
 
-        void ResetFaultResult() override;
 
     protected:
 

@@ -31,6 +31,8 @@ namespace dramfaultsim {
         int devices_per_rank;
         int BL;
 
+        int repeat_round;
+
         double hard_fault_rate;
         std::string address_mapping;
         std::string generator_system;

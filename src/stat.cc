@@ -31,11 +31,11 @@ namespace dramfaultsim {
 
     void Stat::PrintStat() {
         writer_.open(config_.output_dir + "/" + config_.output_prefix
-                     + "_Round_" + std::to_string(config_.repeat_round) + "_Stats.txt",
+                     + "_Round_" + std::to_string(repeat_round) + "_Stats.txt",
                      std::ios::out | std::ios::trunc);
         if (writer_.fail()) {
             std::cerr << "Can't write stats file - " << config_.output_dir << "/" << config_.output_prefix
-                      << "_Round_" << config_.repeat_round << "_Stats.txt" << std::endl;
+                      << "_Round_" << repeat_round << "_Stats.txt" << std::endl;
             AbruptExit(__FILE__, __LINE__);
         }
 
@@ -67,9 +67,9 @@ namespace dramfaultsim {
                 << std::setw(40) << "Number of Fault Columns: " << fault_column_num << "\n"
                 << std::setw(40) << "Number of Correct Columns: " << correct_column_num << "\n"
                 << std::setw(40) << "Fault Rate of Column: " << (double) fault_column_num / (double) executed_column_num
+                << "\n"
 
                 << std::setw(40) << "Number of Fault Bits: " << fault_bit_num << "\n"
-                << "\n"
                 << std::endl;
 
 
