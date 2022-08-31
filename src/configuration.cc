@@ -8,8 +8,11 @@
 
 namespace dramfaultsim {
 
-    Config::Config(std::string config_file, std::string out_dir, uint64_t request, std::string faultmap_read_path, std::string faultmap_write_path)
-            : output_dir(out_dir), num_request(request), faultmap_read_path(faultmap_read_path), faultmap_write_path(faultmap_write_path), reader_(new INIReader(config_file)) {
+    Config::Config(std::string config_file, std::string out_dir, std::string out_prefix, uint64_t request,
+                   std::string faultmap_read_path, std::string faultmap_write_path)
+            : output_dir(out_dir), output_prefix(out_prefix), num_request(request),
+              faultmap_read_path(faultmap_read_path), faultmap_write_path(faultmap_write_path),
+              reader_(new INIReader(config_file)) {
         if (reader_->ParseError() < 0) {
             std::cerr << "Can't load config file - " << config_file << std::endl;
             AbruptExit(__FILE__, __LINE__);
@@ -121,7 +124,7 @@ namespace dramfaultsim {
         thread_num = GetInteger("fault_system", "thread_num", 5);
 
         data_pattern_str = reader.Get("fault_system", "data_pattern", "Random");
-        if(data_pattern_str != "Random"){
+        if (data_pattern_str != "Random") {
             data_pattern = std::stoull(data_pattern_str, &data_pattern, 16);
         }
 

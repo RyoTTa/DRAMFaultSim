@@ -50,8 +50,7 @@ namespace dramfaultsim {
             config_.columns != columns ||
             config_.device_width != device_width ||
             config_.bus_width != bus_width ||
-            config_.devices_per_rank != devices_per_rank ||
-            false) {
+            config_.devices_per_rank != devices_per_rank) {
             //config_.BL != BL) {
 
             std::cerr << "Memory Configuration does not match (FaultMap - Config)" << path_ << std::endl;
@@ -63,7 +62,7 @@ namespace dramfaultsim {
                 for (int k = 0; k < config_.bankgroups; k++) {
                     for (int q = 0; q < config_.banks_per_group; q++) {
                         for (int e = 0; e < config_.rows; e++) {
-                            for(int w = 0; w < config_.actual_colums; w++){
+                            for (int w = 0; w < config_.actual_colums; w++) {
                                 for (int f = 0; f < config_.BL; f++) {
                                     reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].hardfault),
                                                  sizeof(fault_map_[i][j][k][q][e][w][f].hardfault));
@@ -115,16 +114,16 @@ namespace dramfaultsim {
                 for (int k = 0; k < config_.bankgroups; k++) {
                     for (int q = 0; q < config_.banks_per_group; q++) {
                         for (int e = 0; e < config_.rows; e++) {
-                            for(int w = 0; w < config_.actual_colums; w++){
+                            for (int w = 0; w < config_.actual_colums; w++) {
                                 for (int f = 0; f < config_.BL; f++) {
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].hardfault),
-                                                 sizeof(fault_map_[i][j][k][q][e][w][f].hardfault));
+                                                  sizeof(fault_map_[i][j][k][q][e][w][f].hardfault));
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_low),
-                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_low));
+                                                  sizeof(fault_map_[i][j][k][q][e][w][f].vrt_low));
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_mid),
-                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_mid));
+                                                  sizeof(fault_map_[i][j][k][q][e][w][f].vrt_mid));
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_high),
-                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_high));
+                                                  sizeof(fault_map_[i][j][k][q][e][w][f].vrt_high));
                                 }
                             }
                         }

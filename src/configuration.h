@@ -14,7 +14,9 @@ namespace dramfaultsim {
 
     public:
         //Basic Function
-        Config(std::string config_file, std::string out_dir, uint64_t request, std::string faultmap_read_path, std::string faultmap_write_path);
+        Config(std::string config_file, std::string out_dir, std::string out_prefix, uint64_t request,
+               std::string faultmap_read_path,
+               std::string faultmap_write_path);
 
         ~Config();
 
@@ -58,6 +60,7 @@ namespace dramfaultsim {
 
         // Running Request Number
         uint64_t num_request;
+        int repeat_round;
 
         // For Fault Map Read and Write
         std::string faultmap_read_path;
@@ -75,7 +78,6 @@ namespace dramfaultsim {
         std::vector<std::string> fields_name;
 
 
-
     private:
         INIReader *reader_;
 
@@ -85,7 +87,7 @@ namespace dramfaultsim {
                        int default_val) const;
 
         double GetDouble(const std::string &sec, const std::string &opt,
-                       double default_val) const;
+                         double default_val) const;
 
         void InitDRAMParams();
 

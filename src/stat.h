@@ -4,17 +4,19 @@
 
 #ifndef DRAMFAULTSIM_STAT_H
 #define DRAMFAULTSIM_STAT_H
+
 #include "configuration.h"
 #include <iomanip>
 #include <fstream>
 
-namespace dramfaultsim{
-    class Stat{
+namespace dramfaultsim {
+    class Stat {
     public:
         Stat(Config &config);
-        ~Stat();
 
         void PrintStat();
+
+        void ResetStat();
 
         int channel_size;
         int channels;
@@ -44,6 +46,8 @@ namespace dramfaultsim{
         uint64_t fault_column_num;
         uint64_t correct_column_num;
 
+        uint64_t fault_bit_num;
+
         uint64_t single_fault_in_column_num;
         uint64_t double_fault_in_column_num;
         uint64_t triple_fault_in_column_num;
@@ -52,7 +56,6 @@ namespace dramfaultsim{
 
     private:
         Config &config_;
-        std::string dir_path_;
         std::ofstream writer_;
     };
 }

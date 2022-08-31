@@ -61,7 +61,7 @@ namespace dramfaultsim {
 
         if (config_.num_request == 0)
             return false;
-        if (num_executed_request >= config_.num_request)
+        if (stat_.executed_request_num >= config_.num_request)
             return true;
         else
             return false;
@@ -125,7 +125,7 @@ namespace dramfaultsim {
 
                                 if (config_.num_request == 0)
                                     continue;
-                                if (num_executed_request >= config_.num_request)
+                                if (stat_.executed_request_num >= config_.num_request)
                                     return true;
                                 else
                                     continue;

@@ -17,15 +17,22 @@ int main(int argc, const char **argv) {
 
     args::HelpFlag help(parser, "help", "Display the help menu", {'h', "help"});
     args::ValueFlag<uint64_t> num_request_arg(parser, "num_request",
-                                             "Number of request to simulate",
-                                             {'n', "num-request"}, 10);
+                                              "Number of request to simulate",
+                                              {'n', "num-request"}, 10);
     args::ValueFlag<std::string> output_dir_arg(
             parser, "output_dir", "Output directory for stats files",
             {'o', "output-dir"}, ".");
+    args::ValueFlag<std::string> output_prefix_arg(
+            parser, "output_prefix", "Output prefix for stats and fault trace file",
+            {'p', "output-prefix"}, "current");
     args::ValueFlag<std::string> trace_file_arg(
             parser, "trace",
             "Trace file, setting this option will ignore generator configuration",
             {'t', "trace"});
+    args::ValueFlag<int> repeat_round_arg(
+            parser, "repeat",
+            "Repeat Round, Number of repetitions of the experiment",
+            {'d', "repeat_round"}, 1);
     args::ValueFlag<std::string> faultmap_file_read_arg(
             parser, "fault map read path",
             "DRAM Fault-Map file, path to read DRAM Fault-Map file",
@@ -58,11 +65,14 @@ int main(int argc, const char **argv) {
 
     uint64_t request = args::get(num_request_arg);
     std::string output_dir = args::get(output_dir_arg);
+    std::string output_prefix = args::get(output_prefix_arg);
     std::string trace_file_path = args::get(trace_file_arg);
+    int repeat_round = args::get(repeat_round_arg);
     std::string faultmap_read_path = args::get(faultmap_file_read_arg);
     std::string faultmap_write_path = args::get(faultmap_file_write_arg);
 
-    Config *config = new Config(config_file, output_dir, request, faultmap_read_path, faultmap_write_path);
+    Config *config = new Config(config_file, output_dir, output_prefix, request, faultmap_read_path,
+                                faultmap_write_path);
     Stat *stat = new Stat(*config);
 
 
@@ -82,19 +92,30 @@ int main(int argc, const char **argv) {
         }
     }
 
-    bool last_request = false;
-    while (!last_request){
-        last_request = generator->AccessMemory();
+    for (int i = 0; i < repeat_round; i++) {
+        stat->ResetStat();
+
+        config->repeat_round = i;
+        generator->memory_system_->ResetFaultResult();
+
+        std::cout << "Test Round: " << i << std::endl;
+
+        bool last_request = false;
+        while (!last_request) {
+            last_request = generator->AccessMemory();
+        }
+
+        stat->PrintStat();
     }
+
 
     //For DRAM Fault Sim Testing Code
 #ifdef TEST_MODE
     std::cout << "Main Function End" << std::endl;
 #endif  // TEST_MODE
 
-    stat->PrintStat();
-
-
     delete generator;
+    delete stat;
     delete config;
+
 }

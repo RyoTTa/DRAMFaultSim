@@ -25,7 +25,6 @@ namespace dramfaultsim {
             return true;
         }
 
-    protected:
         Config &config_;
         Stat &stat_;
         MemorySystem *memory_system_;

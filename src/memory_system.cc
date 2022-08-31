@@ -5,11 +5,7 @@
 #include <bitset>
 
 namespace dramfaultsim {
-    void MemorySystem::FaultData(uint64_t *data) {
-        for (int i = 0; i < config_.BL; i++) {
-            fault_data[i] = data[i] ^ fault_mask[i];
-        }
-    }
+
 
     NaiveMemorySystem::NaiveMemorySystem(Config &config, Stat &stat) : MemorySystem(config, stat) {
 #ifndef TEST_MODE
@@ -54,6 +50,19 @@ namespace dramfaultsim {
             faultmodel_ = new NaiveFaultModel(config_, data_block_, stat_);
         }
         fault_data = new uint64_t[config_.BL];
+
+        writer_.open(
+                config_.output_dir + "/" + config_.output_prefix + "_Round_" + std::to_string(config_.repeat_round) +
+                "_FaultResult.csv",
+                std::ios::out | std::ios::trunc);
+        if (writer_.fail()) {
+            std::cerr << "Can't write fault result file - " << config_.output_dir << "/" << config_.output_prefix
+                      << "_Round_" << config_.repeat_round << "_FaultResult.csv" << std::endl;
+            AbruptExit(__FILE__, __LINE__);
+        }
+
+        writer_ << ",Round,Id,Channel,Rank,BankGroup,Bank,Row,Col,Dev,Bit,Result\n";
+
     }
 
     NaiveMemorySystem::~NaiveMemorySystem() {
@@ -81,6 +90,8 @@ namespace dramfaultsim {
             delete[] data_block_[i];
         }
         delete[] data_block_;
+
+        writer_.close();
     }
 
     void NaiveMemorySystem::RecvRequest(uint64_t addr, bool is_write, uint64_t *data) {
@@ -102,45 +113,101 @@ namespace dramfaultsim {
         }
 
         fault_mask = faultmodel_->ErrorInjection(addr);
-        MemorySystem::FaultData(data);
+        FaultData(data);
 
-        int fault_columns_num = 0;
-        for (int i = 0; i < config_.BL; i++) {
-            if (fault_mask[i] != (uint64_t) 0) {
-                fault_columns_num++;
-            }
-        }
-
-        CheckFaultMask(fault_columns_num);
+        CheckFaultMask();
 
         return;
     }
 
-    void NaiveMemorySystem::CheckFaultMask(int fault_columns_num) {
-        if (fault_columns_num) {
+    void NaiveMemorySystem::CheckFaultMask() {
+
+        bool check = false;
+        int fault_count_in_column = 0;
+
+        for (int i = 0; i < config_.BL; i++) {
+            if (fault_mask[i] != (uint64_t) 0) {
+                fault_count_in_column = FaultCountInColumn(i);
+                if (fault_count_in_column == 1)
+                    stat_.single_fault_in_column_num++;
+                if (fault_count_in_column == 2)
+                    stat_.double_fault_in_column_num++;
+                if (fault_count_in_column == 3)
+                    stat_.triple_fault_in_column_num++;
+                else
+                    stat_.others_fault_in_column_num++;
+
+                PrintFaultResult(i);
+                stat_.fault_column_num++;
+                check = true;
+            } else {
+                stat_.correct_column_num++;
+            }
+        }
+
+        if (check) {
             stat_.fault_request_num++;
-            stat_.fault_column_num += fault_columns_num;
-            stat_.correct_column_num += config_.BL - fault_columns_num;
-            std::cout << "Request  : 0x" << std::hex << recv_addr_.hex_addr << std::dec << std::endl;
-            std::cout << "Request  :   " << recv_addr_channel << recv_addr_rank << recv_addr_bankgroup
-                      << recv_addr_bank << recv_addr_row << recv_addr_column << std::endl;
-            std::cout << "Request  :   " << recv_addr_.channel << recv_addr_.rank << recv_addr_.bankgroup
-                      << recv_addr_.bank << recv_addr_.row << recv_addr_.column << std::endl;
-            for (int i = 0; i < config_.BL; i++) {
-                std::cout << "Correct Data   " << i << ": 0x" << std::hex
-                          << data_block_[recv_addr_channel][recv_addr_rank]\
-[recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] << std::dec << std::endl;
-            }
-            for (int i = 0; i < config_.BL; i++) {
-                std::cout << "Fault Mask     " << i << ": 0x" << std::hex << fault_mask[i] << std::dec << std::endl;
-            }
-            for (int i = 0; i < config_.BL; i++) {
-                std::cout << "Fault Data   " << i << ": 0x" << std::hex << fault_data[i] << std::dec << std::endl;
-            }
         } else {
             stat_.correct_request_num++;
-            stat_.correct_column_num += config_.BL;
         }
+    }
+
+    int NaiveMemorySystem::FaultCountInColumn(int BL) {
+        int count = 0;
+
+        for (int i = 0; i < config_.bus_width; i++) {
+            if (((uint64_t) 1 & (fault_mask[BL] >> i)) == (uint64_t) 1) {
+                count++;
+            }
+        }
+        return count;
+    }
+
+    void NaiveMemorySystem::PrintFaultResult(int BL) {
+        std::string ID, CHANNEL, RANK, BANKGROUP, BANK, ROW, COL, DEV, BIT;
+
+        CHANNEL = std::string(2 - std::to_string(recv_addr_channel).length(), '0').append(
+                std::to_string(recv_addr_channel));
+        RANK = std::string(2 - std::to_string(recv_addr_rank).length(), '0').append(std::to_string(recv_addr_rank));
+        BANKGROUP = std::string(3 - std::to_string(recv_addr_bankgroup).length(), '0').append(
+                std::to_string(recv_addr_bankgroup));
+        BANK = std::string(3 - std::to_string(recv_addr_bank).length(), '0').append(std::to_string(recv_addr_bank));
+        ROW = std::string(7 - std::to_string(recv_addr_row).length(), '0').append(std::to_string(recv_addr_row));
+        COL = std::string(7 - std::to_string(recv_addr_column * config_.BL + BL).length(), '0').append(
+                std::to_string(recv_addr_column * config_.BL + BL));
+
+
+        for (int j = 0; j < config_.bus_width; j++) {
+            if (fault_mask[BL] >> (((config_.bus_width - 1) - j)) & (uint64_t) 1) {
+                DEV = std::string(3 - std::to_string(j / config_.device_width).length(), '0').append(
+                        std::to_string(j / config_.device_width));
+                BIT = std::string(3 - std::to_string(j % config_.device_width).length(), '0').append(
+                        std::to_string(j % config_.device_width));
+
+                ID = CHANNEL + RANK + BANKGROUP + BANK + ROW + COL + DEV + BIT;
+                writer_ << stat_.fault_bit_num++ << "," << config_.repeat_round << "," << ID << "," << CHANNEL << ","
+                        << RANK << "," << BANKGROUP << "," << BANK << "," << ROW << "," << COL << "," << DEV << ","
+                        << BIT << "," << "F" << "\n";
+            }
+        }
+    }
+
+    void NaiveMemorySystem::ResetFaultResult() {
+        writer_.close();
+
+        writer_.open(
+                config_.output_dir + "/" + config_.output_prefix + "_Round_" + std::to_string(config_.repeat_round) +
+                "_FaultResult.csv",
+                std::ios::out | std::ios::trunc);
+        if (writer_.fail()) {
+            std::cerr << "Can't write fault result file - " << config_.output_dir << "/" << config_.output_prefix
+                      << "_Round_" << config_.repeat_round << "_FaultResult.csv" << std::endl;
+            AbruptExit(__FILE__, __LINE__);
+        }
+
+        writer_ << ",Round,Id,Channel,Rank,BankGroup,Bank,Row,Col,Dev,Bit,Result\n";
+
+
     }
 
     void NaiveMemorySystem::Read(uint64_t *data) {
@@ -192,4 +259,12 @@ namespace dramfaultsim {
          */
         return;
     }
+
+    void NaiveMemorySystem::FaultData(uint64_t *data) {
+        for (int i = 0; i < config_.BL; i++) {
+            fault_data[i] = data[i] ^ fault_mask[i];
+        }
+    }
+
+
 }

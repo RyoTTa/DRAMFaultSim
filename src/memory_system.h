@@ -20,15 +20,25 @@ namespace dramfaultsim {
         virtual ~MemorySystem() {};
 
         virtual void RecvRequest(uint64_t addr, bool is_write, uint64_t *data) = 0;
+
         virtual void Read(uint64_t *data) = 0;
+
         virtual void Write(uint64_t *data) = 0;
-        void FaultData(uint64_t *data);
+
+        virtual void FaultData(uint64_t *data) = 0;
+
+        virtual void CheckFaultMask() = 0;
+
+        virtual void PrintFaultResult(int BL) = 0;
+
+        virtual void ResetFaultResult() = 0;
 
     protected:
         Config &config_;
         Stat &stat_;
         Address recv_addr_;
         FaultModel *faultmodel_;
+        std::ofstream writer_;
 
         //data_block_[Channel][Rank][BankGourp][Bank][Row][Col]
         uint64_t *******data_block_;
@@ -65,17 +75,26 @@ namespace dramfaultsim {
         ~NaiveMemorySystem() override;
 
         void RecvRequest(uint64_t addr, bool is_write, uint64_t *data) override;
+
         void Read(uint64_t *data) override;
+
         void Write(uint64_t *data) override;
 
-        void CheckFaultMask(int fault_num);
+        void FaultData(uint64_t *data) override;
+
+        void CheckFaultMask() override;
+
+        void PrintFaultResult(int BL) override;
+
+        int FaultCountInColumn(int BL);
+
+        void ResetFaultResult() override;
 
     protected:
 
 
     private:
         std::random_device rd;
-        uint64_t gen_addr;
 #ifdef TEST_MODE
         std::mt19937_64 gen;
 #endif
