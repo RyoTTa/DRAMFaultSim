@@ -3,6 +3,7 @@
 //
 #include "faultmodel.h"
 #include <thread>
+#include <bitset>
 
 namespace dramfaultsim {
     NaiveFaultModel::NaiveFaultModel(Config &config, uint64_t *******data_block, Stat &stat)
@@ -30,7 +31,7 @@ namespace dramfaultsim {
                             for (int w = 0; w < config_.actual_colums; w++) {
                                 fault_map_[i][j][k][q][e][w] = new FaultStruct[config_.BL];
                                 for (int f = 0; f < config_.BL; f++) {
-                                    fault_map_[i][j][k][q][e][w][f] = {0,0,0,0};
+                                    fault_map_[i][j][k][q][e][w][f] = {0, 0};
                                 }
                             }
                         }
@@ -88,7 +89,7 @@ namespace dramfaultsim {
                 for (int k = 0; k < config_.bankgroups; k++) {
                     for (int q = 0; q < config_.banks_per_group; q++) {
                         for (int e = 0; e < config_.rows; e++) {
-                            for(int w = 0; w < config_.actual_colums; w++){
+                            for (int w = 0; w < config_.actual_colums; w++) {
                                 delete[] fault_map_[i][j][k][q][e][w];
                             }
                             delete[] fault_map_[i][j][k][q][e];
@@ -113,12 +114,36 @@ namespace dramfaultsim {
 
         HardFaultError();
 
+        VRTFaultError();
+
         return ErrorMask;
     }
 
     void NaiveFaultModel::HardFaultError() {
         for (int i = 0; i < config_.BL; i++) {
             ErrorMask[i] |= fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].hardfault;
+        }
+    }
+
+    void NaiveFaultModel::VRTFaultError() {
+        int rate = GetRandomInt(1, 1000);
+
+        for (int i = 0; i < config_.BL; i++) {
+            if (fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt_size ==
+                0)
+                continue;
+            for (int j = 0; j <
+                            fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt_size; j++) {
+                if (fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j].second >=
+                    rate) {
+                    //std::cout << std::bitset<64>(ErrorMask[i]) << std::endl;
+                    //std::cout << (int)fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j].first<< std::endl;
+                    //std::cout << "Rate : " << rate << "Threshold : " << fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j].second << std::endl;
+                    ErrorMask[i] |= (uint64_t) 1 << ((config_.bus_width - 1) -
+                                                     fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j].first);
+                    //std::cout << std::bitset<64>(ErrorMask[i]) << std::endl << std::endl;
+                }
+            }
         }
     }
 
@@ -198,6 +223,9 @@ namespace dramfaultsim {
 
     void NaiveFaultModel::VRTErrorGeneratorThread(uint64_t num_generate_low, uint64_t num_generate_mid,
                                                   uint64_t num_generate_high) {
+
+        uint16_t rate;
+
         for (uint64_t i = 0; i < num_generate_low; i++) {
             int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
             channel = GetRandomInt(0, (config_.channels - 1));
@@ -209,8 +237,14 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_low |= ((uint64_t) 1 << bit);
+            rate = (uint16_t) (std::abs(GetNormalInt(0, 1)) + 1);
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
+                    std::make_pair(bit, rate));
+
+            //std::cout <<"Low : " << bit << "   " << rate << "\n";
         }
+
 
         for (uint64_t i = 0; i < num_generate_mid; i++) {
             int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
@@ -223,7 +257,12 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_mid |= ((uint64_t) 1 << bit);
+            rate = (uint16_t) GetRandomInt(1, 999);
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
+                    std::make_pair(bit, rate));
+
+            //std::cout <<"Mid : " << bit << "   " << rate << "\n";
         }
 
         for (uint64_t i = 0; i < num_generate_high; i++) {
@@ -237,7 +276,13 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_high |= ((uint64_t) 1 << bit);
+            rate = (uint16_t) (999 - std::abs(GetNormalInt(0, 1)));
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
+                    std::make_pair(bit, rate));
+
+            //std::cout <<"High : " << bit << "   " << rate << "\n";
         }
+
     }
 }

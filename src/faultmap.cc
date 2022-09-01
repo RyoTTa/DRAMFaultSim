@@ -57,6 +57,8 @@ namespace dramfaultsim {
             AbruptExit(__FILE__, __LINE__);
         }
 
+        uint8_t temp_pair1 = 0;
+        uint16_t temp_pair2 = 0;
         for (int i = 0; i < config_.channels; i++) {
             for (int j = 0; j < config_.ranks; j++) {
                 for (int k = 0; k < config_.bankgroups; k++) {
@@ -66,12 +68,27 @@ namespace dramfaultsim {
                                 for (int f = 0; f < config_.BL; f++) {
                                     reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].hardfault),
                                                  sizeof(fault_map_[i][j][k][q][e][w][f].hardfault));
+                                    reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_size),
+                                                 sizeof(fault_map_[i][j][k][q][e][w][f].vrt_size));
+                                    for (int t = 0; t < fault_map_[i][j][k][q][e][w][f].vrt_size; t++) {
+                                        reader_.read((char *) &(temp_pair1),
+                                                     sizeof(uint8_t));
+                                        reader_.read((char *) &(temp_pair2),
+                                                     sizeof(uint16_t));
+                                        fault_map_[i][j][k][q][e][w][f].vrt.push_back(
+                                                std::make_pair(temp_pair1, temp_pair2));
+
+                                        //std::cout << (int)temp_pair1 << "   " << (int)temp_pair2 << "\n";
+                                    }
+
+                                    /*
                                     reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_low),
                                                  sizeof(fault_map_[i][j][k][q][e][w][f].vrt_low));
                                     reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_mid),
                                                  sizeof(fault_map_[i][j][k][q][e][w][f].vrt_mid));
                                     reader_.read((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_high),
                                                  sizeof(fault_map_[i][j][k][q][e][w][f].vrt_high));
+                                    */
                                 }
                             }
                         }
@@ -118,12 +135,22 @@ namespace dramfaultsim {
                                 for (int f = 0; f < config_.BL; f++) {
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].hardfault),
                                                   sizeof(fault_map_[i][j][k][q][e][w][f].hardfault));
+                                    writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_size),
+                                                  sizeof(fault_map_[i][j][k][q][e][w][f].vrt_size));
+                                    for (int t = 0; t < fault_map_[i][j][k][q][e][w][f].vrt_size; t++) {
+                                        writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt[i].first),
+                                                      sizeof(uint8_t));
+                                        writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt[i].second),
+                                                      sizeof(uint16_t));
+                                    }
+                                    /*
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_low),
                                                   sizeof(fault_map_[i][j][k][q][e][w][f].vrt_low));
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_mid),
                                                   sizeof(fault_map_[i][j][k][q][e][w][f].vrt_mid));
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_high),
                                                   sizeof(fault_map_[i][j][k][q][e][w][f].vrt_high));
+                                    */
                                 }
                             }
                         }

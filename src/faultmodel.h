@@ -19,10 +19,11 @@ namespace dramfaultsim {
 
         virtual uint64_t *ErrorInjection(uint64_t addr) = 0;
         virtual void HardFaultError() = 0;
+        virtual void VRTFaultError() = 0;
         //virtual uint64_t VRTError() = 0;
 
         double GetRandomDobule(double low, double high){
-            std::uniform_real_distribution<> dist(low, high);
+            std::uniform_real_distribution<double> dist(low, high);
             std::mt19937_64 gen(rd());
 
             //std::cout << dist(gen) << std::endl;
@@ -35,6 +36,22 @@ namespace dramfaultsim {
 
             //std::cout << dist(gen) << std::endl;
             return dist(gen);
+        }
+
+        double GetNormalDouble(int m, int s){
+            std::normal_distribution<double> dist(m, s);
+            std::mt19937_64 gen(rd());
+
+            //std::cout << dist(gen) << std::endl;
+            return dist(gen);
+        }
+
+        int GetNormalInt(int m, int s){
+            std::normal_distribution<double> dist(m, s);
+            std::mt19937_64 gen(rd());
+
+            //std::cout << dist(gen) << std::endl;
+            return std::round(dist(gen));
         }
 
     protected:
@@ -79,6 +96,8 @@ namespace dramfaultsim {
         uint64_t *ErrorInjection(uint64_t addr) override;
 
         void HardFaultError() override;
+
+        void VRTFaultError() override;
 
         //uint64_t VRTError() override;
 

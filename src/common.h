@@ -43,9 +43,10 @@ struct Address {
 
 typedef struct FaultStruct {
     uint64_t hardfault;
-    uint64_t vrt_low;
-    uint64_t vrt_mid;
-    uint64_t vrt_high;
+
+    uint8_t vrt_size;
+    std::vector<std::pair<uint8_t,uint16_t>> vrt;
+
 
 } FaultStruct;
 
