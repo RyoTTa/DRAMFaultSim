@@ -122,6 +122,12 @@ namespace dramfaultsim {
     void NaiveFaultModel::HardFaultError() {
         for (int i = 0; i < config_.BL; i++) {
             ErrorMask[i] |= fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].hardfault;
+
+            for (int j = 0; j < config_.bus_width; j++) {
+                if(((ErrorMask[i]) & ((uint64_t)1) << j)) {
+                    stat_.hard_fault_bit_num++;
+                }
+            }
         }
     }
 
@@ -141,6 +147,7 @@ namespace dramfaultsim {
                     //std::cout << "Rate : " << rate << "Threshold : " << fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j].second << std::endl;
                     ErrorMask[i] |= (uint64_t) 1 << ((config_.bus_width - 1) -
                                                      fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j].first);
+                    stat_.vrt_fault_bit_num++;
                     //std::cout << std::bitset<64>(ErrorMask[i]) << std::endl << std::endl;
                 }
             }

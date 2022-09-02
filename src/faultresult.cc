@@ -33,7 +33,7 @@ namespace dramfaultsim{
                         std::to_string(j % config_.device_width));
 
                 ID = CHANNEL + RANK + BANKGROUP + BANK + ROW + COL + DEV + BIT;
-                writer_ << stat_.fault_bit_num++ << "," << stat_.repeat_round << "," << ID << "," << CHANNEL << ","
+                writer_ << stat_.all_fault_bit_num++ << "," << stat_.repeat_round << "," << ID << "," << CHANNEL << ","
                         << RANK << "," << BANKGROUP << "," << BANK << "," << ROW << "," << COL << "," << DEV << ","
                         << BIT << "," << "F" << "\n";
             }

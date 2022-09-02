@@ -69,7 +69,9 @@ namespace dramfaultsim {
                 << std::setw(40) << "Fault Rate of Column: " << (double) fault_column_num / (double) executed_column_num
                 << "\n"
 
-                << std::setw(40) << "Number of Fault Bits: " << fault_bit_num << "\n"
+                << std::setw(40) << "Number of Fault Bits: " << all_fault_bit_num << "\n"
+                << std::setw(40) << "Number of HardFault Bits: " << hard_fault_bit_num << "\n"
+                << std::setw(40) << "Number of VRTFault Bits: " << vrt_fault_bit_num << "\n"
                 << std::endl;
 
 
@@ -85,7 +87,11 @@ namespace dramfaultsim {
         fault_column_num = 0;
         correct_column_num = 0;
 
-        fault_bit_num = 0;
+        all_fault_bit_num = 0;
+        hard_fault_bit_num = 0;
+        vrt_fault_bit_num = 0;
+
+        all_fault_bit_num = 0;
 
         single_fault_in_column_num = 0;
         double_fault_in_column_num = 0;

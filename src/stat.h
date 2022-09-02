@@ -48,7 +48,9 @@ namespace dramfaultsim {
         uint64_t fault_column_num;
         uint64_t correct_column_num;
 
-        uint64_t fault_bit_num;
+        uint64_t all_fault_bit_num;
+        uint64_t hard_fault_bit_num;
+        uint64_t vrt_fault_bit_num;
 
         uint64_t single_fault_in_column_num;
         uint64_t double_fault_in_column_num;
