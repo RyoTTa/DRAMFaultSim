@@ -15,14 +15,17 @@ namespace dramfaultsim {
     public:
         FaultModel(Config &config, uint64_t *******data_block, Stat &stat)
                 : config_(config), data_block_(data_block), stat_(stat) {};
-        virtual ~FaultModel(){};
+
+        virtual ~FaultModel() {};
 
         virtual uint64_t *ErrorInjection(uint64_t addr) = 0;
+
         virtual void HardFaultError() = 0;
+
         virtual void VRTFaultError() = 0;
         //virtual uint64_t VRTError() = 0;
 
-        double GetRandomDobule(double low, double high){
+        double GetRandomDobule(double low, double high) {
             std::uniform_real_distribution<double> dist(low, high);
             std::mt19937_64 gen(rd());
 
@@ -30,7 +33,7 @@ namespace dramfaultsim {
             return dist(gen);
         }
 
-        int GetRandomInt(int low, int high){
+        int GetRandomInt(int low, int high) {
             std::uniform_int_distribution<> dist(low, high);
             std::mt19937_64 gen(rd());
 
@@ -38,7 +41,7 @@ namespace dramfaultsim {
             return dist(gen);
         }
 
-        double GetNormalDouble(int m, int s){
+        double GetNormalDouble(int m, int s) {
             std::normal_distribution<double> dist(m, s);
             std::mt19937_64 gen(rd());
 
@@ -46,7 +49,7 @@ namespace dramfaultsim {
             return dist(gen);
         }
 
-        int GetNormalInt(int m, int s){
+        int GetNormalInt(int m, int s) {
             std::normal_distribution<double> dist(m, s);
             std::mt19937_64 gen(rd());
 
@@ -79,6 +82,7 @@ namespace dramfaultsim {
 
             return;
         }
+
     private:
         std::random_device rd;
 #ifdef TEST_MODE
@@ -107,7 +111,9 @@ namespace dramfaultsim {
 
         void VRTErrorGenerator();
 
-        void VRTErrorGeneratorThread(uint64_t num_generate_low, uint64_t num_generate_mid, uint64_t num_generate_high);
+        void
+        VRTErrorGeneratorThread(uint64_t num_generate_low_low, uint64_t num_generate_low, uint64_t num_generate_mid,
+                                uint64_t num_generate_high);
 
     protected:
 
@@ -119,6 +125,7 @@ namespace dramfaultsim {
         uint64_t num_all_cell;
         uint64_t num_hard_fault_cell;
         uint64_t num_vrt_fault_cell;
+        uint64_t num_vrt_fault_low_low_cell;
         uint64_t num_vrt_fault_low_cell;
         uint64_t num_vrt_fault_mid_cell;
         uint64_t num_vrt_fault_high_cell;

@@ -124,7 +124,7 @@ namespace dramfaultsim {
             ErrorMask[i] |= fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].hardfault;
 
             for (int j = 0; j < config_.bus_width; j++) {
-                if(((ErrorMask[i]) & ((uint64_t)1) << j)) {
+                if (((ErrorMask[i]) & ((uint64_t) 1) << j)) {
                     stat_.hard_fault_bit_num++;
                 }
             }
@@ -202,21 +202,23 @@ namespace dramfaultsim {
     void NaiveFaultModel::VRTErrorGenerator() {
         num_vrt_fault_cell = num_hard_fault_cell;
 
-        num_vrt_fault_low_cell = num_vrt_fault_cell / 3;
-        num_vrt_fault_mid_cell = num_vrt_fault_cell / 3;
-        num_vrt_fault_high_cell = num_vrt_fault_cell / 3;
+        num_vrt_fault_low_low_cell = num_vrt_fault_cell / 4;
+        num_vrt_fault_low_cell = num_vrt_fault_cell / 4;
+        num_vrt_fault_mid_cell = num_vrt_fault_cell / 4;
+        num_vrt_fault_high_cell = num_vrt_fault_cell / 4;
 
         //std::cout << num_all_cell << std::endl;
         //std::cout << num_hard_fault_cell << std::endl;
 
         if (config_.thread_model == "SingleThread") {
-            VRTErrorGeneratorThread(num_vrt_fault_low_cell, num_vrt_fault_mid_cell,
-                                    num_vrt_fault_high_cell);
+            VRTErrorGeneratorThread(num_vrt_fault_low_low_cell, num_vrt_fault_low_cell,
+                                    num_vrt_fault_mid_cell, num_vrt_fault_high_cell);
         } else if (config_.thread_model == "MultiThread") {
             std::thread _t[config_.thread_num];
 
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i] = std::thread(&NaiveFaultModel::VRTErrorGeneratorThread, this,
+                                    num_vrt_fault_low_low_cell / (uint64_t) config_.thread_num,
                                     num_vrt_fault_low_cell / (uint64_t) config_.thread_num,
                                     num_vrt_fault_mid_cell / (uint64_t) config_.thread_num,
                                     num_vrt_fault_high_cell / (uint64_t) config_.thread_num);
@@ -228,10 +230,29 @@ namespace dramfaultsim {
 
     }
 
-    void NaiveFaultModel::VRTErrorGeneratorThread(uint64_t num_generate_low, uint64_t num_generate_mid,
-                                                  uint64_t num_generate_high) {
+    void NaiveFaultModel::VRTErrorGeneratorThread(uint64_t num_generate_low_low, uint64_t num_generate_low,
+                                                  uint64_t num_generate_mid, uint64_t num_generate_high) {
 
         uint16_t rate;
+
+        for (uint64_t i = 0; i < num_generate_low_low; i++) {
+            int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
+            channel = GetRandomInt(0, (config_.channels - 1));
+            rank = GetRandomInt(0, (config_.ranks - 1));
+            bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
+            bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
+            row = GetRandomInt(0, (config_.rows - 1));
+            column = GetRandomInt(0, (config_.actual_colums - 1));
+            bl = GetRandomInt(0, config_.BL - 1);
+            bit = GetRandomInt(0, (config_.bus_width - 1));
+
+            rate = (uint16_t) (std::abs(GetNormalInt(0, 1)) + 1);
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
+                    std::make_pair(bit, rate));
+
+            //std::cout <<"Low : " << bit << "   " << rate << "\n";
+        }
 
         for (uint64_t i = 0; i < num_generate_low; i++) {
             int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
@@ -244,7 +265,7 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            rate = (uint16_t) (std::abs(GetNormalInt(0, 1)) + 1);
+            rate = (uint16_t) (std::abs(GetNormalInt(0, 10)) + 2);
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                     std::make_pair(bit, rate));
