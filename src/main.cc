@@ -17,9 +17,10 @@ int main(int argc, const char **argv) {
             "./build/dramfaultsimmain configs/DDR4_8Gb_x8_3200.ini -n 100");
 
     args::HelpFlag help(parser, "help", "Display the help menu", {'h', "help"});
-    args::ValueFlag<uint64_t> num_request_arg(parser, "num_request",
-                                              "Number of request to simulate",
-                                              {'n', "num-request"}, 10);
+    args::ValueFlag<uint64_t> num_request_arg(
+            parser, "num_request",
+            "Number of request to simulate",
+            {'n', "num-request"}, 10);
     args::ValueFlag<std::string> output_dir_arg(
             parser, "output_dir", "Output directory for stats files",
             {'o', "output-dir"}, ".");
@@ -34,6 +35,10 @@ int main(int argc, const char **argv) {
             parser, "repeat",
             "Repeat Round, Number of repetitions of the experiment",
             {'d', "repeat_round"}, 1);
+    args::ValueFlag<int> start_round_arg(
+            parser, "start",
+            "Start Round, Number of first rounds of experimental data output",
+            {'s', "start_round"}, 0);
     args::ValueFlag<std::string> faultmap_file_read_arg(
             parser, "fault map read path",
             "DRAM Fault-Map file, path to read DRAM Fault-Map file",
@@ -69,6 +74,7 @@ int main(int argc, const char **argv) {
     std::string output_prefix = args::get(output_prefix_arg);
     std::string trace_file_path = args::get(trace_file_arg);
     int repeat_round = args::get(repeat_round_arg);
+    int start_round = args::get(start_round_arg);
     std::string faultmap_read_path = args::get(faultmap_file_read_arg);
     std::string faultmap_write_path = args::get(faultmap_file_write_arg);
 
@@ -93,8 +99,9 @@ int main(int argc, const char **argv) {
             generator = new RandomGenerator(*config, *stat, *fault_result);
         }
     }
+    repeat_round += start_round;
 
-    for (stat->repeat_round = 0; stat->repeat_round < repeat_round; stat->repeat_round++) {
+    for (stat->repeat_round = start_round; stat->repeat_round < repeat_round; stat->repeat_round++) {
         fault_result->SetFaultResult();
 
         std::cout << "Test Round: " << stat->repeat_round << std::endl;
