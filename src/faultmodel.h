@@ -113,7 +113,7 @@ namespace dramfaultsim {
 
         void
         VRTErrorGeneratorThread(uint64_t num_generate_low_low, uint64_t num_generate_low, uint64_t num_generate_mid,
-                                uint64_t num_generate_high);
+                                uint64_t num_generate_high, uint64_t num_generate_high_high);
 
     protected:
 
@@ -129,6 +129,7 @@ namespace dramfaultsim {
         uint64_t num_vrt_fault_low_cell;
         uint64_t num_vrt_fault_mid_cell;
         uint64_t num_vrt_fault_high_cell;
+        uint64_t num_vrt_fault_high_high_cell;
 
 #ifdef TEST_MODE
         std::mt19937_64 gen;

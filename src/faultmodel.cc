@@ -202,17 +202,18 @@ namespace dramfaultsim {
     void NaiveFaultModel::VRTErrorGenerator() {
         num_vrt_fault_cell = num_hard_fault_cell;
 
-        num_vrt_fault_low_low_cell = num_vrt_fault_cell / 4;
-        num_vrt_fault_low_cell = num_vrt_fault_cell / 4;
-        num_vrt_fault_mid_cell = num_vrt_fault_cell / 4;
-        num_vrt_fault_high_cell = num_vrt_fault_cell / 4;
+        num_vrt_fault_low_low_cell = num_vrt_fault_cell / 5;
+        num_vrt_fault_low_cell = num_vrt_fault_cell / 5;
+        num_vrt_fault_mid_cell = num_vrt_fault_cell / 5;
+        num_vrt_fault_high_cell = num_vrt_fault_cell / 5;
+        num_vrt_fault_high_high_cell = num_vrt_fault_cell / 5;
 
         //std::cout << num_all_cell << std::endl;
         //std::cout << num_hard_fault_cell << std::endl;
 
         if (config_.thread_model == "SingleThread") {
             VRTErrorGeneratorThread(num_vrt_fault_low_low_cell, num_vrt_fault_low_cell,
-                                    num_vrt_fault_mid_cell, num_vrt_fault_high_cell);
+                                    num_vrt_fault_mid_cell, num_vrt_fault_high_cell, num_vrt_fault_high_high_cell);
         } else if (config_.thread_model == "MultiThread") {
             std::thread _t[config_.thread_num];
 
@@ -221,7 +222,8 @@ namespace dramfaultsim {
                                     num_vrt_fault_low_low_cell / (uint64_t) config_.thread_num,
                                     num_vrt_fault_low_cell / (uint64_t) config_.thread_num,
                                     num_vrt_fault_mid_cell / (uint64_t) config_.thread_num,
-                                    num_vrt_fault_high_cell / (uint64_t) config_.thread_num);
+                                    num_vrt_fault_high_cell / (uint64_t) config_.thread_num,
+                                    num_vrt_fault_high_high_cell / (uint64_t) config_.thread_num);
             }
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i].join();
@@ -231,7 +233,8 @@ namespace dramfaultsim {
     }
 
     void NaiveFaultModel::VRTErrorGeneratorThread(uint64_t num_generate_low_low, uint64_t num_generate_low,
-                                                  uint64_t num_generate_mid, uint64_t num_generate_high) {
+                                                  uint64_t num_generate_mid, uint64_t num_generate_high,
+                                                  uint64_t num_generate_high_high) {
 
         uint16_t rate;
 
@@ -265,7 +268,7 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            rate = (uint16_t) (std::abs(GetNormalInt(0, 10)) + 2);
+            rate = (uint16_t) (std::abs(GetNormalInt(0, 50)) + 2);
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                     std::make_pair(bit, rate));
@@ -304,7 +307,26 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            rate = (uint16_t) (999 - std::abs(GetNormalInt(0, 1)));
+            rate = (uint16_t) (999 - (std::abs(GetNormalInt(0, 50)) + 1));
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
+            fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
+                    std::make_pair(bit, rate));
+
+            //std::cout <<"High : " << bit << "   " << rate << "\n";
+        }
+
+        for (uint64_t i = 0; i < num_generate_high_high; i++) {
+            int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
+            channel = GetRandomInt(0, (config_.channels - 1));
+            rank = GetRandomInt(0, (config_.ranks - 1));
+            bankgroup = GetRandomInt(0, (config_.bankgroups - 1));
+            bankpergroup = GetRandomInt(0, (config_.banks_per_group - 1));
+            row = GetRandomInt(0, (config_.rows - 1));
+            column = GetRandomInt(0, (config_.actual_colums - 1));
+            bl = GetRandomInt(0, config_.BL - 1);
+            bit = GetRandomInt(0, (config_.bus_width - 1));
+
+            rate = (uint16_t) (999 - (std::abs(GetNormalInt(0, 1)) + 1));
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                     std::make_pair(bit, rate));
