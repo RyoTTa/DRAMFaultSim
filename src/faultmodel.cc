@@ -268,7 +268,7 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            rate = (uint16_t) (std::abs(GetNormalInt(0, 50)) + 2);
+            rate = (uint16_t) (std::abs(GetNormalInt(0, 50)) + 1);
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                     std::make_pair(bit, rate));
@@ -307,7 +307,7 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            rate = (uint16_t) (999 - (std::abs(GetNormalInt(0, 50)) + 1));
+            rate = (uint16_t) (999 - (std::abs(GetNormalInt(0, 50))));
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                     std::make_pair(bit, rate));
@@ -326,7 +326,7 @@ namespace dramfaultsim {
             bl = GetRandomInt(0, config_.BL - 1);
             bit = GetRandomInt(0, (config_.bus_width - 1));
 
-            rate = (uint16_t) (999 - (std::abs(GetNormalInt(0, 1)) + 1));
+            rate = (uint16_t) (999 - (std::abs(GetNormalInt(0, 1))));
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt_size++;
             fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                     std::make_pair(bit, rate));
