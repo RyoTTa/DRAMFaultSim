@@ -76,7 +76,7 @@ namespace dramfaultsim {
                                         reader_.read((char *) &(temp_pair2),
                                                      sizeof(uint16_t));
                                         fault_map_[i][j][k][q][e][w][f].vrt.push_back(
-                                                std::make_pair(temp_pair1, temp_pair2));
+                                                std::make_tuple(temp_pair1, temp_pair2, false) );
 
                                         //std::cout << (int)temp_pair1 << "   " << (int)temp_pair2 << "\n";
                                     }
@@ -138,9 +138,9 @@ namespace dramfaultsim {
                                     writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt_size),
                                                   sizeof(fault_map_[i][j][k][q][e][w][f].vrt_size));
                                     for (int t = 0; t < fault_map_[i][j][k][q][e][w][f].vrt_size; t++) {
-                                        writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt[i].first),
+                                        writer_.write((char *) &(std::get<0>(fault_map_[i][j][k][q][e][w][f].vrt[i])),
                                                       sizeof(uint8_t));
-                                        writer_.write((char *) &(fault_map_[i][j][k][q][e][w][f].vrt[i].second),
+                                        writer_.write((char *) &(std::get<1>(fault_map_[i][j][k][q][e][w][f].vrt[i])),
                                                       sizeof(uint16_t));
                                     }
                                     /*

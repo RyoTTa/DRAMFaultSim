@@ -5,6 +5,7 @@
 #include <iostream>
 #include <iomanip>
 #include <vector>
+#include <tuple>
 
 
 namespace dramfaultsim{
@@ -45,7 +46,7 @@ typedef struct FaultStruct {
     uint64_t hardfault;
 
     uint8_t vrt_size;
-    std::vector<std::pair<uint8_t,uint16_t>> vrt;
+    std::vector<std::tuple<uint8_t,uint16_t,bool>> vrt;
 
 
 } FaultStruct;
