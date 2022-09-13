@@ -116,12 +116,12 @@ namespace dramfaultsim {
 
     void Config::InitFaultModelParams() {
         const auto &reader = *reader_;
-        hard_fault_rate = GetDouble("fault_system", "hard_fault_rate", 0.001);
+        fault_rate = GetDouble("fault_system", "fault_rate", 0.001);
         generator_system = reader.Get("fault_system", "generator_system", "RandomGenerator");
         memory_system = reader.Get("fault_system", "memory_system", "NaiveMemorySystem");
         fault_model = reader.Get("fault_system", "fault_model", "NaiveFaultModel");
         thread_model = reader.Get("fault_system", "thread", "SingleThread");
-        thread_num = GetInteger("fault_system", "thread_num", 5);
+        thread_num = GetInteger("fault_system", "thread_num", 1);
 
         data_pattern_str = reader.Get("fault_system", "data_pattern", "Random");
         if (data_pattern_str != "Random") {

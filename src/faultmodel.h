@@ -112,8 +112,8 @@ namespace dramfaultsim {
         void VRTErrorGenerator();
 
         void
-        VRTErrorGeneratorThread(uint64_t num_generate_low_low, uint64_t num_generate_low, uint64_t num_generate_mid,
-                                uint64_t num_generate_high, uint64_t num_generate_high_high);
+        VRTErrorGeneratorThread(uint64_t num_generate_once, uint64_t num_generate_low_low, uint64_t num_generate_low,
+                                uint64_t num_generate_mid, uint64_t num_generate_high, uint64_t num_generate_high_high);
 
     protected:
 
@@ -125,6 +125,7 @@ namespace dramfaultsim {
         uint64_t num_all_cell;
         uint64_t num_hard_fault_cell;
         uint64_t num_vrt_fault_cell;
+        uint64_t num_vrt_fault_once_cell;
         uint64_t num_vrt_fault_low_low_cell;
         uint64_t num_vrt_fault_low_cell;
         uint64_t num_vrt_fault_mid_cell;
@@ -136,11 +137,11 @@ namespace dramfaultsim {
 #endif
     };
 
-    class BetaFaultModel : public FaultModel {
+    class BetaDistFaultModel : public FaultModel {
     public:
-        BetaFaultModel(Config &config, uint64_t *******data_block, Stat &stat);
+        BetaDistFaultModel(Config &config, uint64_t *******data_block, Stat &stat);
 
-        ~BetaFaultModel() override;
+        ~BetaDistFaultModel() override;
 
         uint64_t *ErrorInjection(uint64_t addr) override;
 
@@ -155,8 +156,7 @@ namespace dramfaultsim {
         void VRTErrorGenerator();
 
         void
-        VRTErrorGeneratorThread(uint64_t num_generate_low_low, uint64_t num_generate_low, uint64_t num_generate_mid,
-                                uint64_t num_generate_high, uint64_t num_generate_high_high);
+        VRTErrorGeneratorThread(int thread_id);
 
     protected:
 
@@ -166,13 +166,9 @@ namespace dramfaultsim {
 
         uint64_t *ErrorMask;
         uint64_t num_all_cell;
-        uint64_t num_hard_fault_cell;
-        uint64_t num_vrt_fault_cell;
-        uint64_t num_vrt_fault_low_low_cell;
-        uint64_t num_vrt_fault_low_cell;
-        uint64_t num_vrt_fault_mid_cell;
-        uint64_t num_vrt_fault_high_cell;
-        uint64_t num_vrt_fault_high_high_cell;
+        uint64_t num_fault_cell;
+
+        uint64_t num_fault_array[101];
 
 #ifdef TEST_MODE
         std::mt19937_64 gen;

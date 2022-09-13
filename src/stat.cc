@@ -20,7 +20,7 @@ namespace dramfaultsim {
         devices_per_rank = config_.devices_per_rank;
         BL = config_.BL;
 
-        hard_fault_rate = config_.hard_fault_rate;
+        fault_rate = config_.fault_rate;
         address_mapping = config_.address_mapping;
         generator_system = config_.generator_system;
         memory_system = config_.memory_system;
@@ -55,7 +55,7 @@ namespace dramfaultsim {
                 << std::setw(40) << "Generator System: " << generator_system << "\n"
                 << std::setw(40) << "Memory System: " << memory_system << "\n"
                 << std::setw(40) << "Fault Model: " << fault_model << "\n"
-                << std::setw(40) << "Hard Fault Rate: " << hard_fault_rate << "\n"
+                << std::setw(40) << "Hard Fault Rate: " << fault_rate << "\n"
                 << std::setw(40) << "Data Pattern: " << data_pattern_str << "\n"
 
                 << std::setw(40) << "Number of Executed Requests: " << executed_request_num << "\n"

@@ -33,25 +33,25 @@
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 43,
+				"line" : 44,
 				"parent" : 0
 			},
 			{
 				"command" : 1,
 				"file" : 0,
-				"line" : 44,
+				"line" : 45,
 				"parent" : 0
 			},
 			{
 				"command" : 2,
 				"file" : 0,
-				"line" : 45,
+				"line" : 46,
 				"parent" : 0
 			},
 			{
 				"command" : 3,
 				"file" : 0,
-				"line" : 46,
+				"line" : 47,
 				"parent" : 0
 			}
 		]
@@ -149,13 +149,6 @@
 				6,
 				7
 			]
-		},
-		{
-			"name" : "Header Files",
-			"sourceIndexes" : 
-			[
-				8
-			]
 		}
 	],
 	"sources" : 
@@ -207,11 +200,6 @@
 			"compileGroupIndex" : 0,
 			"path" : "src/faultresult.cc",
 			"sourceGroupIndex" : 0
-		},
-		{
-			"backtrace" : 1,
-			"path" : "src/faultresult.h",
-			"sourceGroupIndex" : 1
 		}
 	],
 	"type" : "SHARED_LIBRARY"

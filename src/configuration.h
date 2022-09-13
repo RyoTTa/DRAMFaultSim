@@ -69,7 +69,7 @@ namespace dramfaultsim {
         int request_size_bytes;
 
         // For Fault Model
-        double hard_fault_rate;
+        double fault_rate;
         std::string data_pattern_str; //For RandomGenerator or SequentialGenerator
         uint64_t data_pattern;
 

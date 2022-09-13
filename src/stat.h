@@ -33,7 +33,7 @@ namespace dramfaultsim {
 
         int repeat_round;
 
-        double hard_fault_rate;
+        double fault_rate;
         std::string address_mapping;
         std::string generator_system;
         std::string memory_system;

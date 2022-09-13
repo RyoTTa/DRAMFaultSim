@@ -50,6 +50,11 @@ namespace dramfaultsim {
         }
         if (config_.fault_model == "NaiveFaultModel") {
             faultmodel_ = new NaiveFaultModel(config_, data_block_, stat_);
+        }else if (config_.fault_model == "BetaDistFaultModel") {
+            faultmodel_ = new BetaDistFaultModel(config_, data_block_, stat_);
+        }else{
+            config_.fault_model = "NaiveFaultModel";
+            faultmodel_ = new NaiveFaultModel(config_, data_block_, stat_);
         }
         fault_data = new uint64_t[config_.BL];
 
