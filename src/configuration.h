@@ -72,6 +72,7 @@ namespace dramfaultsim {
         double fault_rate;
         std::string data_pattern_str; //For RandomGenerator or SequentialGenerator
         uint64_t data_pattern;
+        double beta_dist_alpha, beta_dist_beta; // For Beta Distribution Fault Model
 
         std::map<std::string, int> field_widths;
         std::vector<std::string> fields_name;

@@ -123,6 +123,9 @@ namespace dramfaultsim {
         thread_model = reader.Get("fault_system", "thread", "SingleThread");
         thread_num = GetInteger("fault_system", "thread_num", 1);
 
+        beta_dist_alpha = GetDouble("fault_system", "beta_dist_alpha", 0.5);
+        beta_dist_beta = GetDouble("fault_system", "beta_dist_beta", 0.5);
+
         data_pattern_str = reader.Get("fault_system", "data_pattern", "Random");
         if (data_pattern_str != "Random") {
             data_pattern = std::stoull(data_pattern_str, &data_pattern, 16);
