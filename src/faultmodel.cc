@@ -522,7 +522,7 @@ namespace dramfaultsim {
                 continue;
             for (int j = 0; j <
                             fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt_size; j++) {
-                rate = GetRandomInt(1, 100);
+                rate = GetRandomInt(0, 100);
                 fault = false;
                 if (std::get<1>(
                         fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j]) >=
@@ -573,18 +573,18 @@ namespace dramfaultsim {
         double a = 0.0;
         double temp = 0.01;
         for (int i = 1; i < 100; i++) {
-            a += std::pow(10, boost::math::ibeta_derivative(1, 2, temp));
+            a += std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp));
             //a += std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp));
             temp += 0.01;
         }
-        a += std::pow(10, boost::math::ibeta_derivative(1, 2, 0.991));
+        a += std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991));
         //a += std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991));
 
         double b = (double) num_fault_cell;
         temp = 0.01;
 
         for (int i = 1; i < 100; i++) {
-            num_fault_array[i] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(1, 2, temp)) * b) / a);
+            num_fault_array[i] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp)) * b) / a);
             //num_fault_array[i] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp)) * b) / a);
             /*
             std::cout << "Beta : " << boost::math::ibeta_derivative(1, 2, temp) << std::endl;
@@ -604,8 +604,15 @@ namespace dramfaultsim {
         std::cout << "10 ^ Beta * b / a : " << (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(1, 2, 0.991)) * b) / a) << std::endl;
         std::cout << "Num Fault Cell : " << num_fault_cell << std::endl;
         */
-        num_fault_array[100] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(1, 2, 0.991)) * b) / a);
+        num_fault_array[100] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991)) * b) / a);
         //num_fault_array[100] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991)) * b) / a);
+
+        /*
+        for(unsigned long i : num_fault_array){
+            std::cout << i << " " ;
+        }
+        std::cout << std::endl;
+        */
 
         if (config_.thread_model == "SingleThread") {
             std::cout << "Single" << std::endl;
@@ -621,10 +628,7 @@ namespace dramfaultsim {
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i].join();
             }
-
-
         }
-
     }
 
     void BetaDistFaultModel::HardFaultGeneratorThread(uint64_t num_generate) {
@@ -668,8 +672,8 @@ namespace dramfaultsim {
 
     void BetaDistFaultModel::VRTErrorGeneratorThread(int thread_id) {
 
-        for (uint64_t i = thread_id * config_.thread_num;
-             i < (uint64_t) (thread_id * config_.thread_num + 100 / config_.thread_num); i++) {
+        for (uint64_t i = thread_id * config_.thread_num + 1;
+             i <= (uint64_t) (thread_id * config_.thread_num + 100 / config_.thread_num); i++) {
             if (i == 0)
                 continue;
 
@@ -688,6 +692,7 @@ namespace dramfaultsim {
                 fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                         std::make_tuple(bit, (uint16_t) i, false));
             }
+            //std::cout << "Index : " << i << "  Value : " << num_fault_array[i] << std::endl;
             //std::cout <<"Low : " << bit << "   " << rate << "\n";
         }
 
