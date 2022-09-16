@@ -170,6 +170,8 @@ namespace dramfaultsim {
 
         uint64_t num_fault_array[101];
 
+        uint64_t num_fault_array_ext[1001];
+
 #ifdef TEST_MODE
         std::mt19937_64 gen;
 #endif

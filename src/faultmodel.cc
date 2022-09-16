@@ -150,6 +150,8 @@ namespace dramfaultsim {
                     fault = true;
                 }
 
+                /*
+
                 if (fault != std::get<2>(
                         fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j])) {
                     rate = GetRandomInt(1, 1000);
@@ -160,6 +162,7 @@ namespace dramfaultsim {
                         fault = true;
                     }
                 }
+                 */
 
 
                 if (fault) {
@@ -522,10 +525,10 @@ namespace dramfaultsim {
                 continue;
             for (int j = 0; j <
                             fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt_size; j++) {
-                rate = GetRandomInt(0, 100);
+                rate = GetRandomInt(0, 1000);
                 fault = false;
                 if (std::get<1>(
-                        fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j]) >=
+                        fault_map_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i].vrt[j]) >
                     rate) {
                     fault = true;
                 }
@@ -572,6 +575,7 @@ namespace dramfaultsim {
 
         double a = 0.0;
         double temp = 0.01;
+        std::cout << config_.beta_dist_alpha << config_.beta_dist_beta << std::endl;
         for (int i = 1; i < 100; i++) {
             a += std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp));
             //a += std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp));
@@ -607,23 +611,34 @@ namespace dramfaultsim {
         num_fault_array[100] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991)) * b) / a);
         //num_fault_array[100] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991)) * b) / a);
 
-        /*
+
         for(unsigned long i : num_fault_array){
             std::cout << i << " " ;
         }
         std::cout << std::endl;
-        */
+
+        for (int i = 1; i <= 100; i++){
+            for(int j = 10 * (i - 1) + 1 ; j < 10 * (i - 1) + 1 + 10 ; j++){
+                num_fault_array_ext[j] = (uint64_t )(num_fault_array[i] / 10.0);
+            }
+        }
+
+        for(unsigned long i : num_fault_array_ext){
+            std::cout << i << " " ;
+        }
+        std::cout << std::endl;
+
 
         if (config_.thread_model == "SingleThread") {
             std::cout << "Single" << std::endl;
-            HardFaultGeneratorThread(num_fault_array[100]);
+            HardFaultGeneratorThread(num_fault_array_ext[1000]);
         } else if (config_.thread_model == "MultiThread") {
             std::cout << "Multi" << std::endl;
             std::thread _t[config_.thread_num];
 
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i] = std::thread(&BetaDistFaultModel::HardFaultGeneratorThread, this,
-                                    num_fault_array[100] / (uint64_t) config_.thread_num);
+                                    num_fault_array_ext[1000] / (uint64_t) config_.thread_num);
             }
             for (int i = 0; i < config_.thread_num; i++) {
                 _t[i].join();
@@ -672,12 +687,12 @@ namespace dramfaultsim {
 
     void BetaDistFaultModel::VRTErrorGeneratorThread(int thread_id) {
 
-        for (uint64_t i = thread_id * config_.thread_num + 1;
-             i <= (uint64_t) (thread_id * config_.thread_num + 100 / config_.thread_num); i++) {
+        for (uint64_t i = thread_id * 1000 / config_.thread_num;
+             i < (uint64_t) (thread_id * 1000 / config_.thread_num + 1000 / config_.thread_num); i++) {
             if (i == 0)
                 continue;
 
-            for (uint64_t j = 0; j < num_fault_array[i]; j++) {
+            for (uint64_t j = 0; j < num_fault_array_ext[i]; j++) {
                 int channel, rank, bankgroup, bankpergroup, row, column, bl, bit;
                 channel = GetRandomInt(0, (config_.channels - 1));
                 rank = GetRandomInt(0, (config_.ranks - 1));
@@ -692,7 +707,7 @@ namespace dramfaultsim {
                 fault_map_[channel][rank][bankgroup][bankpergroup][row][column][bl].vrt.push_back(
                         std::make_tuple(bit, (uint16_t) i, false));
             }
-            //std::cout << "Index : " << i << "  Value : " << num_fault_array[i] << std::endl;
+            //std::cout << "Index : " << i << "  Value : " << num_fault_array_ext[i] << std::endl;
             //std::cout <<"Low : " << bit << "   " << rate << "\n";
         }
 
