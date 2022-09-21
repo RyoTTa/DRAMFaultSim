@@ -58,9 +58,9 @@ namespace dramfaultsim {
                 << std::setw(50) << "Hard Fault Rate: " << fault_rate << "\n"
                 << std::setw(50) << "Data Pattern: " << data_pattern_str << "\n"
 
-                << std::setw(50) << "Number of Executed Requests: " << executed_request_num << "\n"
-                << std::setw(50) << "Number of Fault Requests: " << fault_request_num << "\n"
-                << std::setw(50) << "Number of Correct Request: " << correct_request_num << "\n"
+                << std::setw(50) << "Number of Executed Requests(BL): " << executed_request_num << "\n"
+                << std::setw(50) << "Number of Fault Requests(BL): " << fault_request_num << "\n"
+                << std::setw(50) << "Number of Correct Request(BL): " << correct_request_num << "\n"
                 << std::setw(50) << "Fault Rate of Request(BL): "
                 << (double) fault_request_num / (double) executed_request_num << "\n"
                 << std::setw(50) << "Number of Executed Columns: " << executed_column_num << "\n"
