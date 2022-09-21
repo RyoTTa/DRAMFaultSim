@@ -46,7 +46,10 @@ typedef struct FaultStruct {
     uint64_t hardfault;
 
     uint8_t vrt_size;
-    std::vector<std::tuple<uint8_t,uint16_t,bool>> vrt;
+    // vrt(bit address, fault probability, previous result)
+    std::vector<std::tuple<uint8_t, uint16_t, bool>> vrt;
+    // coupling_cell(bit address, couple column, couple bit)
+    std::vector<std::tuple<uint8_t, uint16_t, uint8_t>> coupling_cell;
 
 
 } FaultStruct;

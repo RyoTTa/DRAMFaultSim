@@ -42,7 +42,7 @@ set(THREADS_PREFER_PTHREAD_FLAG ON)
 find_package(Threads REQUIRED)
 target_include_directories(dramfaultsim INTERFACE src)
 target_compile_options(dramfaultsim PRIVATE -Wall)
-target_compile_options(dramfaultsim PUBLIC -pthread)
+target_compile_options(dramfaultsim PUBLIC -pthread -O3)
 target_link_libraries(dramfaultsim PRIVATE inih Threads::Threads)
 set_target_properties(dramfaultsim PROPERTIES
         LIBRARY_OUTPUT_DIRECTORY ${PROJECT_SOURCE_DIR}
@@ -54,7 +54,7 @@ set_target_properties(dramfaultsim PROPERTIES
 add_executable(dramfaultsimmain src/main.cc)
 target_link_libraries(dramfaultsimmain PRIVATE dramfaultsim args Threads::Threads)
 target_compile_options(dramfaultsimmain PRIVATE)
-target_compile_options(dramfaultsimmain PUBLIC -pthread)
+target_compile_options(dramfaultsimmain PUBLIC -pthread -O3)
 if (TEST_MODE)
     target_compile_options(dramfaultsimmain PRIVATE -DTEST_MODE)
 endif (TEST_MODE)

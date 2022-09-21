@@ -183,6 +183,10 @@ namespace dramfaultsim {
         }
     }
 
+    void NaiveFaultModel::DataDependentFaultError() {
+
+    }
+
     void NaiveFaultModel::HardFaultGenerator() {
         num_all_cell =
                 (uint64_t) config_.channels * (uint64_t) config_.ranks * (uint64_t) config_.bankgroups *
@@ -565,6 +569,10 @@ namespace dramfaultsim {
         }
     }
 
+    void BetaDistFaultModel::DataDependentFaultError() {
+
+    }
+
     void BetaDistFaultModel::HardFaultGenerator() {
         num_all_cell =
                 (uint64_t) config_.channels * (uint64_t) config_.ranks * (uint64_t) config_.bankgroups *
@@ -589,25 +597,9 @@ namespace dramfaultsim {
 
         for (int i = 1; i < 100; i++) {
             num_fault_array[i] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp)) * b) / a);
-            //num_fault_array[i] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, temp)) * b) / a);
-            /*
-            std::cout << "Beta : " << boost::math::ibeta_derivative(1, 2, temp) << std::endl;
-            std::cout << "10 ^ Beta : " << std::pow(10, boost::math::ibeta_derivative(1, 2, temp)) << std::endl;
-            std::cout << "10 ^ Beta * b : " << std::pow(10, boost::math::ibeta_derivative(1, 2, temp)) * b << std::endl;
-            std::cout << "10 ^ Beta / a : " << (std::pow(10, boost::math::ibeta_derivative(1, 2, temp)) / a) << std::endl;
-            std::cout << "10 ^ Beta * b / a : " << (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(1, 2, temp)) * b) / a) << std::endl;
-            */
             temp += 0.01;
             //std::cout << num_fault_array[i] << std::endl;
         }
-        /*
-        std::cout << "Beta : " << boost::math::ibeta_derivative(1, 2, 0.99) << std::endl;
-        std::cout << "10 ^ Beta : " << std::pow(10, boost::math::ibeta_derivative(1, 2, 0.99)) << std::endl;
-        std::cout << "10 ^ Beta * b : " << std::pow(10, boost::math::ibeta_derivative(1, 2, 0.99)) * b << std::endl;
-        std::cout << "10 ^ Beta / a : " << (std::pow(10, boost::math::ibeta_derivative(1, 2, 0.99)) / a) << std::endl;
-        std::cout << "10 ^ Beta * b / a : " << (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(1, 2, 0.991)) * b) / a) << std::endl;
-        std::cout << "Num Fault Cell : " << num_fault_cell << std::endl;
-        */
         num_fault_array[100] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991)) * b) / a);
         //num_fault_array[100] = (uint64_t) ((std::pow(10, boost::math::ibeta_derivative(config_.beta_dist_alpha, config_.beta_dist_beta, 0.991)) * b) / a);
 

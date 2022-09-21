@@ -83,12 +83,14 @@ namespace dramfaultsim {
 
         int FaultCountInColumn(int BL);
 
+        void PrintFaultTrace();
 
     protected:
 
 
     private:
         std::random_device rd;
+        std::ofstream writer_;
 #ifdef TEST_MODE
         std::mt19937_64 gen;
 #endif

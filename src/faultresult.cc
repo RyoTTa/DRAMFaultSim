@@ -9,7 +9,7 @@ namespace dramfaultsim{
     : config_(config), stat_(stat){
     }
 
-    void FaultResult::PrintFaultResult(uint64_t addr, int BL, uint64_t *fault_mask) {
+    void FaultResult::PrintFaultResult(uint64_t addr, int BL, uint64_t *fault_mask, uint64_t *data) {
         SetRecvAddress(addr);
 
         std::string ID, CHANNEL, RANK, BANKGROUP, BANK, ROW, COL, DEV, BIT;
@@ -26,7 +26,9 @@ namespace dramfaultsim{
 
 
         for (int j = 0; j < config_.bus_width; j++) {
-            if (fault_mask[BL] >> (((config_.bus_width - 1) - j)) & (uint64_t) 1) {
+            if ((fault_mask[BL] >> (((config_.bus_width - 1) - j)) & (uint64_t) 1)
+            &&  (data[BL] >> (((config_.bus_width - 1) - j)) & (uint64_t)1) == (uint64_t)1) {
+
                 DEV = std::string(3 - std::to_string(j / config_.device_width).length(), '0').append(
                         std::to_string(j / config_.device_width));
                 BIT = std::string(3 - std::to_string(j % config_.device_width).length(), '0').append(

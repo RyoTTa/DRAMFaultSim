@@ -50,13 +50,24 @@ namespace dramfaultsim {
         }
         if (config_.fault_model == "NaiveFaultModel") {
             faultmodel_ = new NaiveFaultModel(config_, data_block_, stat_);
-        }else if (config_.fault_model == "BetaDistFaultModel") {
+        } else if (config_.fault_model == "BetaDistFaultModel") {
             faultmodel_ = new BetaDistFaultModel(config_, data_block_, stat_);
-        }else{
+        } else {
             config_.fault_model = "NaiveFaultModel";
             faultmodel_ = new NaiveFaultModel(config_, data_block_, stat_);
         }
         fault_data = new uint64_t[config_.BL];
+
+        if (config_.fault_trace_on) {
+            writer_.open(config_.output_dir + "/" + config_.output_prefix
+                         + "_Round_" + std::to_string(stat_.repeat_round) + "_Trace.txt",
+                         std::ios::out | std::ios::trunc);
+            if (writer_.fail()) {
+                std::cerr << "Can't write stats file - " << config_.output_dir << "/" << config_.output_prefix
+                          << "_Round_" << stat_.repeat_round << "_Trace.txt" << std::endl;
+                AbruptExit(__FILE__, __LINE__);
+            }
+        }
 
     }
 
@@ -85,6 +96,8 @@ namespace dramfaultsim {
             delete[] data_block_[i];
         }
         delete[] data_block_;
+
+        writer_.close();
     }
 
     void NaiveMemorySystem::RecvRequest(uint64_t addr, bool is_write, uint64_t *data) {
@@ -115,11 +128,13 @@ namespace dramfaultsim {
 
     void NaiveMemorySystem::CheckFaultMask() {
 
-        bool check = false;
+        bool check = true;
         int fault_count_in_column = 0;
+        int fault_count_in_BL = 0;
 
         for (int i = 0; i < config_.BL; i++) {
             if (fault_mask[i] != (uint64_t) 0) {
+
                 fault_count_in_column = FaultCountInColumn(i);
                 if (fault_count_in_column == 1)
                     stat_.single_fault_in_column_num++;
@@ -130,19 +145,46 @@ namespace dramfaultsim {
                 else
                     stat_.others_fault_in_column_num++;
 
+                fault_count_in_BL += fault_count_in_column;
                 //PrintFaultResult(i);
-                fault_result_.PrintFaultResult(recv_addr_.hex_addr,i,fault_mask);
-                stat_.fault_column_num++;
-                check = true;
+                if (fault_count_in_column != 0) {
+                    fault_result_.PrintFaultResult(recv_addr_.hex_addr, i, fault_mask,
+                                                   data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column]);
+                    stat_.fault_column_num++;
+                }
             } else {
                 stat_.correct_column_num++;
             }
         }
+        if (fault_count_in_BL == 0)
+            check = false;
+        else if (fault_count_in_BL == 1)
+            stat_.single_fault_in_BL_num++;
+        else if (fault_count_in_BL == 2)
+            stat_.double_fault_in_BL_num++;
+        else if (fault_count_in_BL == 3)
+            stat_.triple_fault_in_BL_num++;
+        else
+            stat_.others_fault_in_BL_num++;
 
         if (check) {
             stat_.fault_request_num++;
         } else {
             stat_.correct_request_num++;
+        }
+
+        if (check && config_.fault_trace_on) {
+            writer_ << std::hex << recv_addr_.hex_addr << " ";
+            for (int i = 0; i < config_.BL; i++) {
+                writer_ << std::hex
+                        << data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i]
+                        << " ";
+            }
+            //writer_ << "\n";
+            for (int i = 0; i < config_.BL; i++) {
+                writer_ << std::hex << fault_data[i] << " ";
+            }
+            writer_ << "\n";
         }
     }
 
@@ -150,7 +192,10 @@ namespace dramfaultsim {
         int count = 0;
 
         for (int i = 0; i < config_.bus_width; i++) {
-            if (((uint64_t) 1 & (fault_mask[BL] >> i)) == (uint64_t) 1) {
+            if ((((uint64_t) 1 & (fault_mask[BL] >> i)) == (uint64_t) 1) // Only 1 -> 0 Fault Count, High -> Low
+                &&
+                (data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][BL]
+                         >> i & (uint64_t) 1) == (uint64_t) 1) {
                 count++;
             }
         }
@@ -210,7 +255,8 @@ namespace dramfaultsim {
 
     void NaiveMemorySystem::FaultData(uint64_t *data) {
         for (int i = 0; i < config_.BL; i++) {
-            fault_data[i] = data[i] ^ fault_mask[i];
+            //fault_data[i] = data[i] ^ fault_mask[i];
+            fault_data[i] = data[i] & (~fault_mask[i]);
         }
     }
 

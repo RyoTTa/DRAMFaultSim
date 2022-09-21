@@ -131,6 +131,12 @@ namespace dramfaultsim {
             data_pattern = std::stoull(data_pattern_str, &data_pattern, 16);
         }
 
+        std::string temp_str = reader.Get("fault_system", "fault_trace", "Off");
+        if (temp_str == "On")
+            fault_trace_on = true;
+        else
+            fault_trace_on = false;
+
 #ifdef TEST_MODE
         std::cout << "Data Pattern : " << std::hex << data_pattern << std::dec << std::endl;
 #endif

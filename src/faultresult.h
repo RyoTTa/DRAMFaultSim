@@ -19,7 +19,7 @@ namespace dramfaultsim{
 
         void ResetFaultResult();
         void SetFaultResult();
-        void PrintFaultResult(uint64_t addr, int BL, uint64_t *fault_mask);
+        void PrintFaultResult(uint64_t addr, int BL, uint64_t *fault_mask, uint64_t *data);
 
         void SetRecvAddress(uint64_t addr) {
             recv_addr_ = config_.AddressMapping(addr);

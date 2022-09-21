@@ -56,6 +56,11 @@ namespace dramfaultsim {
         uint64_t double_fault_in_column_num;
         uint64_t triple_fault_in_column_num;
         uint64_t others_fault_in_column_num;
+
+        uint64_t single_fault_in_BL_num;
+        uint64_t double_fault_in_BL_num;
+        uint64_t triple_fault_in_BL_num;
+        uint64_t others_fault_in_BL_num;
         uint64_t logical_adjacent_fault_in_column_num;
 
     private:

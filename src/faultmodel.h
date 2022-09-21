@@ -23,6 +23,8 @@ namespace dramfaultsim {
         virtual void HardFaultError() = 0;
 
         virtual void VRTFaultError() = 0;
+
+        virtual void DataDependentFaultError() = 0;
         //virtual uint64_t VRTError() = 0;
 
         double GetRandomDobule(double low, double high) {
@@ -103,6 +105,8 @@ namespace dramfaultsim {
 
         void VRTFaultError() override;
 
+        void DataDependentFaultError() override;
+
         //uint64_t VRTError() override;
 
         void HardFaultGenerator();
@@ -114,6 +118,8 @@ namespace dramfaultsim {
         void
         VRTErrorGeneratorThread(uint64_t num_generate_once, uint64_t num_generate_low_low, uint64_t num_generate_low,
                                 uint64_t num_generate_mid, uint64_t num_generate_high, uint64_t num_generate_high_high);
+
+
 
     protected:
 
@@ -151,12 +157,15 @@ namespace dramfaultsim {
 
         void HardFaultGeneratorThread(uint64_t num_generate);
 
+
         void VRTFaultError() override;
 
         void VRTErrorGenerator();
 
-        void
-        VRTErrorGeneratorThread(int thread_id);
+        void VRTErrorGeneratorThread(int thread_id);
+
+
+        void DataDependentFaultError() override;
 
     protected:
 
