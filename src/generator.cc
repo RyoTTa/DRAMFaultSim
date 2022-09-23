@@ -5,10 +5,12 @@
 #include <bitset>
 
 namespace dramfaultsim {
-    RandomGenerator::RandomGenerator(Config &config, Stat &stat, FaultResult &fault_result)
-            : Generator(config, stat, fault_result) {
+    RandomGenerator::RandomGenerator(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace)
+            : Generator(config, stat, fault_result, fault_trace) {
         if (config_.memory_system == "NaiveMemorySystem") {
-            memory_system_ = new NaiveMemorySystem(config_, stat_, fault_result_);
+            memory_system_ = new NaiveMemorySystem(config_, stat_, fault_result_, fault_trace_);
+        }else{
+            memory_system_ = new NaiveMemorySystem(config_, stat_, fault_result_, fault_trace_);
         }
 
         gen_data = new uint64_t [config_.BL];
@@ -57,8 +59,6 @@ namespace dramfaultsim {
 */
         memory_system_->RecvRequest(gen_addr, is_write, gen_data);
 
-
-
         if (config_.num_request == 0)
             return false;
         if (stat_.executed_request_num >= config_.num_request)
@@ -68,10 +68,12 @@ namespace dramfaultsim {
 
     }
 
-    SequentialGenerator::SequentialGenerator(Config &config, Stat &stat, FaultResult &fault_result)
-            : Generator(config, stat, fault_result) {
+    SequentialGenerator::SequentialGenerator(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace)
+    : Generator(config, stat, fault_result, fault_trace) {
         if (config_.memory_system == "NaiveMemorySystem") {
-            memory_system_ = new NaiveMemorySystem(config_, stat_, fault_result_);
+            memory_system_ = new NaiveMemorySystem(config_, stat_, fault_result_, fault_trace_);
+        }else{
+            memory_system_ = new NaiveMemorySystem(config_, stat_, fault_result_, fault_trace_);
         }
 
         gen_data = new uint64_t [config_.BL];

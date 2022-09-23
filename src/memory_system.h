@@ -10,13 +10,14 @@
 #include "faultmodel.h"
 #include "stat.h"
 #include "faultresult.h"
+#include "faulttrace.h"
 
 namespace dramfaultsim {
 
     class MemorySystem {
     public:
-        MemorySystem(Config &config, Stat &stat, FaultResult &fault_result)
-                : config_(config), stat_(stat), fault_result_(fault_result) {}
+        MemorySystem(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace)
+                : config_(config), stat_(stat), fault_result_(fault_result), fault_trace_(fault_trace) {}
 
         virtual ~MemorySystem() {};
 
@@ -34,6 +35,7 @@ namespace dramfaultsim {
         Config &config_;
         Stat &stat_;
         FaultResult &fault_result_;
+        FaultTrace &fault_trace_;
         Address recv_addr_;
         FaultModel *faultmodel_;
 
@@ -67,7 +69,7 @@ namespace dramfaultsim {
 
     class NaiveMemorySystem : public MemorySystem {
     public:
-        NaiveMemorySystem(Config &config, Stat &stat, FaultResult &fault_result);
+        NaiveMemorySystem(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace);
 
         ~NaiveMemorySystem() override;
 

@@ -7,9 +7,8 @@
 namespace dramfaultsim {
 
 
-    NaiveMemorySystem::NaiveMemorySystem(Config &config, Stat &stat, FaultResult &fault_result) : MemorySystem(config,
-                                                                                                               stat,
-                                                                                                               fault_result) {
+    NaiveMemorySystem::NaiveMemorySystem(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace)
+            : MemorySystem(config, stat, fault_result, fault_trace) {
 #ifndef TEST_MODE
         std::mt19937_64 gen(rd());
 #endif
@@ -57,17 +56,6 @@ namespace dramfaultsim {
             faultmodel_ = new NaiveFaultModel(config_, data_block_, stat_);
         }
         fault_data = new uint64_t[config_.BL];
-
-        if (config_.fault_trace_on) {
-            writer_.open(config_.output_dir + "/" + config_.output_prefix
-                         + "_Round_" + std::to_string(stat_.repeat_round) + "_Trace.txt",
-                         std::ios::out | std::ios::trunc);
-            if (writer_.fail()) {
-                std::cerr << "Can't write stats file - " << config_.output_dir << "/" << config_.output_prefix
-                          << "_Round_" << stat_.repeat_round << "_Trace.txt" << std::endl;
-                AbruptExit(__FILE__, __LINE__);
-            }
-        }
 
     }
 
@@ -174,17 +162,9 @@ namespace dramfaultsim {
         }
 
         if (check && config_.fault_trace_on) {
-            writer_ << std::hex << recv_addr_.hex_addr << " ";
-            for (int i = 0; i < config_.BL; i++) {
-                writer_ << std::hex
-                        << data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i]
-                        << " ";
-            }
-            //writer_ << "\n";
-            for (int i = 0; i < config_.BL; i++) {
-                writer_ << std::hex << fault_data[i] << " ";
-            }
-            writer_ << "\n";
+            fault_trace_.PrintFaultTrace(recv_addr_.hex_addr,
+                                         data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column],
+                                         fault_data);
         }
     }
 
@@ -204,52 +184,18 @@ namespace dramfaultsim {
 
 
     void NaiveMemorySystem::Read(uint64_t *data) {
-        /*
-#ifdef TEST_MODE
-        std::cout << "Read Request  : 0x" << std::hex << recv_addr_.hex_addr << std::dec << std::endl;
-        for (int i=0; i < config_.BL; i++){
-            std::cout << "Read Data Before   "<< i <<": 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
-            [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] << std::dec << std::endl;
-        }
-#endif
-         */
-
         for (int i = 0; i < config_.BL; i++) {
             data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] = data[i];
         }
-        /*
-#ifdef TEST_MODE
-        for (int i=0; i < config_.BL; i++){
-            std::cout << "Read Data After   "<< i <<": 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
-            [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] << std::dec << std::endl;
-        }
-#endif
-         */
+
         return;
     }
 
     void NaiveMemorySystem::Write(uint64_t *data) {
-        /*
-#ifdef TEST_MODE
-        std::cout << "Write Request  : 0x" << std::hex << recv_addr_.hex_addr << std::dec << std::endl;
-        for (int i=0; i < config_.BL; i++){
-            std::cout << "Write Data Before   "<< i <<": 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
-            [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] << std::dec << std::endl;
-        }
-#endif
-         */
-
         for (int i = 0; i < config_.BL; i++) {
             data_block_[recv_addr_channel][recv_addr_rank][recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] = data[i];
         }
-        /*
-#ifdef TEST_MODE
-        for (int i=0; i < config_.BL; i++){
-            std::cout << "Write Data After   "<< i <<": 0x" << std::hex << data_block_[recv_addr_channel][recv_addr_rank]\
-            [recv_addr_bankgroup][recv_addr_bank][recv_addr_row][recv_addr_column][i] << std::dec << std::endl;
-        }
-#endif
-         */
+
         return;
     }
 

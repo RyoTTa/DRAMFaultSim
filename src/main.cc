@@ -5,8 +5,20 @@
 #include "generator.h"
 #include "stat.h"
 #include "faultresult.h"
+#include "faulttrace.h"
+#include "sighandler.h"
 
 using namespace dramfaultsim;
+
+
+SignalHandler *sig_handler;
+
+void signal_event_handler(int _sig_num){
+    std::cout << "signal event handler" << std::endl;
+    sig_handler->print_result(_sig_num);
+    exit(0);
+
+}
 
 int main(int argc, const char **argv) {
 
@@ -82,6 +94,9 @@ int main(int argc, const char **argv) {
                                 faultmap_write_path);
     Stat *stat = new Stat(*config);
     FaultResult *fault_result = new FaultResult(*config, *stat);
+    FaultTrace *fault_trace = new FaultTrace(*config, *stat);
+
+
 
 
 #ifdef TEST_MODE
@@ -93,16 +108,29 @@ int main(int argc, const char **argv) {
     } else {
         if (config->generator_system == "SequentialGenerator") {
             std::cout << "SequentialBasedGenerator" << std::endl;
-            generator = new SequentialGenerator(*config, *stat, *fault_result);
+            generator = new SequentialGenerator(*config, *stat, *fault_result, *fault_trace);
         } else {
             std::cout << "RandomBasedGenerator" << std::endl;
-            generator = new RandomGenerator(*config, *stat, *fault_result);
+            generator = new RandomGenerator(*config, *stat, *fault_result, *fault_trace);
         }
     }
+
+    sig_handler = new SignalHandler(*generator, *stat, *config, *fault_result, *fault_trace);
+    sig_handler->set_signal(SIGINT);
+    sig_handler->set_signal(SIGKILL);
+    sig_handler->set_signal(SIGTERM);
+    sig_handler->set_signal(SIGPIPE);
+    sig_handler->set_signal_handler(&signal_event_handler);
+
+    std::cout << "Helelo" << std::endl;
+
+
     repeat_round += start_round;
 
     for (stat->repeat_round = start_round; stat->repeat_round < repeat_round; stat->repeat_round++) {
         fault_result->SetFaultResult();
+        if(config->fault_trace_on)
+            fault_trace->SetFaultTrace();
 
         std::cout << "Test Round: " << stat->repeat_round << std::endl;
 
@@ -110,10 +138,8 @@ int main(int argc, const char **argv) {
         while (!last_request) {
             last_request = generator->AccessMemory();
         }
-        stat->PrintStat();
 
-        fault_result->ResetFaultResult();
-        stat->ResetStat();
+        sig_handler->print_result(0);
     }
 
 

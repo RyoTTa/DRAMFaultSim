@@ -52,7 +52,7 @@ build cmake_object_order_depends_target_dramfaultsim: phony || CMakeFiles/dramfa
 build CMakeFiles/dramfaultsim.dir/src/common.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/common.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/common.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -60,7 +60,7 @@ build CMakeFiles/dramfaultsim.dir/src/common.cc.o: CXX_COMPILER__dramfaultsim_De
 build CMakeFiles/dramfaultsim.dir/src/configuration.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/configuration.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/configuration.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -68,7 +68,7 @@ build CMakeFiles/dramfaultsim.dir/src/configuration.cc.o: CXX_COMPILER__dramfaul
 build CMakeFiles/dramfaultsim.dir/src/generator.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/generator.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/generator.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -76,7 +76,7 @@ build CMakeFiles/dramfaultsim.dir/src/generator.cc.o: CXX_COMPILER__dramfaultsim
 build CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/memory_system.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -84,7 +84,7 @@ build CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o: CXX_COMPILER__dramfaul
 build CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/faultmodel.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -92,7 +92,7 @@ build CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o: CXX_COMPILER__dramfaultsi
 build CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/faultmap.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -100,7 +100,7 @@ build CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o: CXX_COMPILER__dramfaultsim_
 build CMakeFiles/dramfaultsim.dir/src/stat.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/stat.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/stat.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -108,7 +108,23 @@ build CMakeFiles/dramfaultsim.dir/src/stat.cc.o: CXX_COMPILER__dramfaultsim_Debu
 build CMakeFiles/dramfaultsim.dir/src/faultresult.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/faultresult.cc || cmake_object_order_depends_target_dramfaultsim
   DEFINES = -Ddramfaultsim_EXPORTS
   DEP_FILE = CMakeFiles/dramfaultsim.dir/src/faultresult.cc.o.d
-  FLAGS = -g -fPIC -Wall -pthread -std=c++11
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
+  INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
+  OBJECT_DIR = CMakeFiles/dramfaultsim.dir
+  OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
+
+build CMakeFiles/dramfaultsim.dir/src/faulttrace.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/faulttrace.cc || cmake_object_order_depends_target_dramfaultsim
+  DEFINES = -Ddramfaultsim_EXPORTS
+  DEP_FILE = CMakeFiles/dramfaultsim.dir/src/faulttrace.cc.o.d
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
+  INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
+  OBJECT_DIR = CMakeFiles/dramfaultsim.dir
+  OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
+
+build CMakeFiles/dramfaultsim.dir/src/sighandler.cc.o: CXX_COMPILER__dramfaultsim_Debug /home/ryotta205/git/DRAMFaultSim/src/sighandler.cc || cmake_object_order_depends_target_dramfaultsim
+  DEFINES = -Ddramfaultsim_EXPORTS
+  DEP_FILE = CMakeFiles/dramfaultsim.dir/src/sighandler.cc.o.d
+  FLAGS = -g -fPIC -Wall -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsim.dir/src
@@ -121,7 +137,7 @@ build CMakeFiles/dramfaultsim.dir/src/faultresult.cc.o: CXX_COMPILER__dramfaults
 #############################################
 # Link the shared library ../libdramfaultsim.so
 
-build ../libdramfaultsim.so: CXX_SHARED_LIBRARY_LINKER__dramfaultsim_Debug CMakeFiles/dramfaultsim.dir/src/common.cc.o CMakeFiles/dramfaultsim.dir/src/configuration.cc.o CMakeFiles/dramfaultsim.dir/src/generator.cc.o CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o CMakeFiles/dramfaultsim.dir/src/stat.cc.o CMakeFiles/dramfaultsim.dir/src/faultresult.cc.o
+build ../libdramfaultsim.so: CXX_SHARED_LIBRARY_LINKER__dramfaultsim_Debug CMakeFiles/dramfaultsim.dir/src/common.cc.o CMakeFiles/dramfaultsim.dir/src/configuration.cc.o CMakeFiles/dramfaultsim.dir/src/generator.cc.o CMakeFiles/dramfaultsim.dir/src/memory_system.cc.o CMakeFiles/dramfaultsim.dir/src/faultmodel.cc.o CMakeFiles/dramfaultsim.dir/src/faultmap.cc.o CMakeFiles/dramfaultsim.dir/src/stat.cc.o CMakeFiles/dramfaultsim.dir/src/faultresult.cc.o CMakeFiles/dramfaultsim.dir/src/faulttrace.cc.o CMakeFiles/dramfaultsim.dir/src/sighandler.cc.o
   LANGUAGE_COMPILE_FLAGS = -g
   LINK_LIBRARIES = -pthread
   OBJECT_DIR = CMakeFiles/dramfaultsim.dir
@@ -143,7 +159,7 @@ build cmake_object_order_depends_target_dramfaultsimmain: phony || cmake_object_
 
 build CMakeFiles/dramfaultsimmain.dir/src/main.cc.o: CXX_COMPILER__dramfaultsimmain_Debug /home/ryotta205/git/DRAMFaultSim/src/main.cc || cmake_object_order_depends_target_dramfaultsimmain
   DEP_FILE = CMakeFiles/dramfaultsimmain.dir/src/main.cc.o.d
-  FLAGS = -g -pthread -std=c++11
+  FLAGS = -g -pthread -O3 -std=c++11
   INCLUDES = -I/home/ryotta205/git/DRAMFaultSim/src -I/home/ryotta205/git/DRAMFaultSim/ext/headers
   OBJECT_DIR = CMakeFiles/dramfaultsimmain.dir
   OBJECT_FILE_DIR = CMakeFiles/dramfaultsimmain.dir/src

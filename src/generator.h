@@ -15,8 +15,8 @@ namespace dramfaultsim {
 
     class Generator {
     public:
-        Generator(Config &config, Stat &stat, FaultResult &fault_result)
-                : config_(config), stat_(stat), fault_result_(fault_result),num_executed_request(0) {};
+        Generator(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace)
+                : config_(config), stat_(stat), fault_result_(fault_result),fault_trace_(fault_trace),num_executed_request(0) {};
         virtual ~Generator(){};
 
         virtual bool AccessMemory() {
@@ -29,6 +29,7 @@ namespace dramfaultsim {
         Config &config_;
         Stat &stat_;
         FaultResult &fault_result_;
+        FaultTrace &fault_trace_;
         MemorySystem *memory_system_;
         uint64_t num_executed_request;
 
@@ -36,7 +37,7 @@ namespace dramfaultsim {
 
     class RandomGenerator : public Generator {
     public:
-        RandomGenerator(Config &config, Stat &stat, FaultResult &fault_result);
+        RandomGenerator(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace);
         ~RandomGenerator() override;
 
         bool AccessMemory() override;
@@ -54,7 +55,7 @@ namespace dramfaultsim {
 
     class SequentialGenerator : public Generator {
     public:
-        SequentialGenerator(Config &config, Stat &stat, FaultResult &fault_result);
+        SequentialGenerator(Config &config, Stat &stat, FaultResult &fault_result, FaultTrace &fault_trace);
         ~SequentialGenerator() override;
 
         bool AccessMemory() override;
