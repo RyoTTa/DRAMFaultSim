@@ -137,6 +137,8 @@ namespace dramfaultsim {
         else
             fault_trace_on = false;
 
+        size_of_codeword = GetInteger("fault_system", "size_of_codeword", 64);
+
 #ifdef TEST_MODE
         std::cout << "Data Pattern : " << std::hex << data_pattern << std::dec << std::endl;
 #endif
@@ -181,6 +183,11 @@ namespace dramfaultsim {
         std::cout << "Effective Addr Mask: " << std::hex << effective_addr_mask << std::dec << std::endl;
         std::cout << "Effective Addr Mask: " << std::bitset<64>(effective_addr_mask) << std::endl << std::endl;
 #endif  // TEST_MODE
+
+        num_codeword_burst = (double)size_of_codeword / (device_width * BL);
+        if(num_codeword_burst == 0){
+            num_codeword_burst = 1;
+        }
         return;
     }
 

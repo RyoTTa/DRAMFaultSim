@@ -74,6 +74,8 @@ namespace dramfaultsim {
         uint64_t data_pattern;
         double beta_dist_alpha, beta_dist_beta; // For Beta Distribution Fault Model
         bool fault_trace_on;
+        int size_of_codeword;
+        int num_codeword_burst;
 
         std::map<std::string, int> field_widths;
         std::vector<std::string> fields_name;
